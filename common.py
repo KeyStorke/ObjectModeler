@@ -1,4 +1,4 @@
-def check_for_instance(var_type: type, var: object) -> bool:
+def check_for_instance(var_type: type or None, var: object) -> bool:
     """ checking an instance of
 
     :param var_type: any type
