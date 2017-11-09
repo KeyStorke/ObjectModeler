@@ -1,9 +1,9 @@
-from common import check_for_instance, contain_none, contain_str_type, convert_type, is_empty_string, is_last_element, \
-    ObjectModelDictMetaclass, PrettyObjectModelDictMetaclass
+from object_modeler.common import check_for_instance, contain_none, contain_str_type, convert_type, is_empty_string, is_last_element, \
+    ObjectModelSlotsMetaclass
 
 
-class _PrototypeDictObjectModel:
-    _all_fields = tuple()
+class _PrototypeSlotsObjectModel:
+    __slots__ = tuple()
     _fields_types = dict()
     _default_values = dict()
     _optional_fields = dict()
@@ -15,9 +15,7 @@ class _PrototypeDictObjectModel:
         return type(self).__name__
 
     def init_model(self, kwargs):
-        for item in self._all_fields:
-            if item not in self._fields_types.keys():
-                raise TypeError('Unknown type for {}'.format(item))
+        for item in self.__slots__:
             if self._item_not_found(item, kwargs):
                 raise ValueError('required field {}'.format(item))
             if self._optional_item_not_found(item, kwargs):
@@ -26,7 +24,15 @@ class _PrototypeDictObjectModel:
             self._set_item(item, value)
 
     def to_dict(self):
-        return self.__dict__
+        result = dict()
+        for item in self.__slots__:
+            if hasattr(self, item):
+                result[item] = getattr(self, item)
+            elif item in self._optional_fields:
+                continue
+            else:
+                raise AttributeError('{} object has no attribute {}'.format(self.__name__, item))
+        return result
 
     def _item_not_found(self, item, kwargs):
         return item not in kwargs and item not in self._default_values and item not in self._optional_fields
@@ -39,7 +45,7 @@ class _PrototypeDictObjectModel:
 
         # if value is None
         if value is None and None in var_types:
-            setattr(self, key, value)
+            setattr(self, key, None)
             return
 
         if is_empty_string(value) and contain_none(var_types):
@@ -73,18 +79,8 @@ class _PrototypeDictObjectModel:
             )
 
 
-class GenericDictObjectModel(_PrototypeDictObjectModel, metaclass=ObjectModelDictMetaclass):
+class GenericSlotsObjectModel(_PrototypeSlotsObjectModel, metaclass=ObjectModelSlotsMetaclass):
     all_fields = tuple()
     optional_fields = tuple()
     default_values = dict()
     fields_types = dict()
-
-
-class PrettyDictObjectModel(_PrototypeDictObjectModel, metaclass=PrettyObjectModelDictMetaclass):
-    all_fields = tuple()
-    optional_fields = tuple()
-    default_values = dict()
-    fields_types = dict()
-
-    def __init__(self, data):
-        self.init_model(data)

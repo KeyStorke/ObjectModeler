@@ -1,7 +1,9 @@
 import unittest
-from slots_object_model import GenericSlotsObjectModel
-from dict_object_model import GenericDictObjectModel, PrettyDictObjectModel
-from common import Field
+
+from object_modeler import Field
+from object_modeler import GenericSlotsObjectModel
+
+from object_modeler import GenericDictObjectModel, PrettyDictObjectModel
 
 test_dict = {
     'a': '1',
