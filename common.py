@@ -1,5 +1,6 @@
 from typing import List, Tuple
 
+class Undefined: pass
 
 def check_for_instance(var_type: type or None, var: object) -> bool:
     """ checking an instance of
@@ -98,49 +99,94 @@ def is_correct_datatypes(datatypes: List[Tuple]) -> bool:
     _datatypes = flatten(datatypes)
     return all(map(lambda datatype: callable(datatype) or datatype is None, _datatypes))
 
+def checking_cls_dictionary(cls_dict):
+    # for all fields must be defined data type
+    assert compare_lists(cls_dict['all_fields'], cls_dict['fields_types'].keys())
+
+    # all fields must be defined in all_fields
+    assert contain_all_elements(cls_dict['all_fields'], cls_dict['optional_fields'])
+    assert contain_all_elements(cls_dict['all_fields'], cls_dict['default_values'].keys())
+
+
+def new_slots_class(mcs, name, bases, cls_dict):
+    checking_cls_dictionary(cls_dict)
+
+    cls_dict['__slots__'] = cls_dict['all_fields']
+    cls_dict['_optional_fields'] = cls_dict['optional_fields']
+    cls_dict['_default_values'] = cls_dict['default_values']
+    cls_dict['_fields_types'] = cls_dict['fields_types']
+
+    cls_dict.pop('all_fields')
+    cls_dict.pop('optional_fields')
+    cls_dict.pop('default_values')
+    cls_dict.pop('fields_types')
+
+    return type.__new__(mcs, name, bases, cls_dict)
+
+def new_dict_class(mcs, name, bases, cls_dict: dict):
+    checking_cls_dictionary(cls_dict)
+
+    cls_dict['_all_fields'] = cls_dict['all_fields']
+    cls_dict['_optional_fields'] = cls_dict['optional_fields']
+    cls_dict['_default_values'] = cls_dict['default_values']
+    cls_dict['_fields_types'] = cls_dict['fields_types']
+
+    cls_dict.pop('all_fields')
+    cls_dict.pop('optional_fields')
+    cls_dict.pop('default_values')
+    cls_dict.pop('fields_types')
+
+    return type.__new__(mcs, name, bases, cls_dict)
 
 class ObjectModelSlotsMetaclass(type):
     def __new__(mcs, name, bases, cls_dict: dict):
-        # for all fields must be defined data type
-        assert compare_lists(cls_dict['all_fields'], cls_dict['fields_types'].keys())
-
-        # all fields must be defined in all_fields
-        assert contain_all_elements(cls_dict['all_fields'], cls_dict['optional_fields'])
-        assert contain_all_elements(cls_dict['all_fields'], cls_dict['default_values'].keys())
-
-        # validate datatypes (all types must be callable or None)
-        assert is_correct_datatypes(cls_dict['fields_types'].values())
-
-        cls_dict['__slots__'] = cls_dict['all_fields']
-        cls_dict['_optional_fields'] = cls_dict['optional_fields']
-        cls_dict['_default_values'] = cls_dict['default_values']
-        cls_dict['_fields_types'] = cls_dict['fields_types']
-
-        cls_dict.pop('all_fields')
-        cls_dict.pop('optional_fields')
-        cls_dict.pop('default_values')
-        cls_dict.pop('fields_types')
-
-        return type.__new__(mcs, name, bases, cls_dict)
+        return new_slots_class(mcs, name, bases, cls_dict)
 
 
 class ObjectModelDictMetaclass(type):
     def __new__(mcs, name, bases, cls_dict: dict):
-        # for all fields must be defined data type
-        assert compare_lists(cls_dict['all_fields'], cls_dict['fields_types'].keys())
+        return new_dict_class(mcs, name, bases, cls_dict)
 
-        # all fields must be defined in all_fields
-        assert contain_all_elements(cls_dict['all_fields'], cls_dict['optional_fields'])
-        assert contain_all_elements(cls_dict['all_fields'], cls_dict['default_values'].keys())
 
-        cls_dict['_all_fields'] = cls_dict['all_fields']
-        cls_dict['_optional_fields'] = cls_dict['optional_fields']
-        cls_dict['_default_values'] = cls_dict['default_values']
-        cls_dict['_fields_types'] = cls_dict['fields_types']
+class Field:
+    def __init__(self, types: tuple, optional: bool = False, default_value: object = Undefined()):
+        self.types = types
+        self.optional = optional
+        self.default_value = default_value
 
-        cls_dict.pop('all_fields')
-        cls_dict.pop('optional_fields')
-        cls_dict.pop('default_values')
-        cls_dict.pop('fields_types')
 
-        return type.__new__(mcs, name, bases, cls_dict)
+class PrettyObjectModelDictMetaclass(type):
+    def __new__(mcs, name, bases, cls_dict: dict):
+        items = list()
+
+        all_fields = list()
+        optional_fields = list()
+        default_values = dict()
+        fields_types = dict()
+
+        for item in cls_dict.items():
+            if isinstance(item, tuple) and len(item) == 2:
+                field_name, value = item
+
+                if isinstance(value, Field):
+                    items.append((field_name, value))
+
+        for field_name, field in items:
+            all_fields.append(field_name)
+            if field.optional:
+                optional_fields.append(field_name)
+
+            if not isinstance(field.default_value, Undefined):
+                default_values[field_name] = field.default_value
+
+            fields_types[field_name] = field.types
+
+        cls_dict['all_fields'] = tuple(all_fields)
+        cls_dict['optional_fields'] = tuple(optional_fields)
+        cls_dict['default_values'] = default_values
+        cls_dict['fields_types'] = fields_types
+
+        return new_dict_class(mcs, name, bases, cls_dict)
+
+
+

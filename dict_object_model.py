@@ -1,5 +1,5 @@
 from common import check_for_instance, contain_none, contain_str_type, convert_type, is_empty_string, is_last_element, \
-    ObjectModelDictMetaclass
+    ObjectModelDictMetaclass, PrettyObjectModelDictMetaclass
 
 
 class _PrototypeDictObjectModel:
@@ -78,3 +78,13 @@ class GenericDictObjectModel(_PrototypeDictObjectModel, metaclass=ObjectModelDic
     optional_fields = tuple()
     default_values = dict()
     fields_types = dict()
+
+
+class PrettyDictObjectModel(_PrototypeDictObjectModel, metaclass=PrettyObjectModelDictMetaclass):
+    all_fields = tuple()
+    optional_fields = tuple()
+    default_values = dict()
+    fields_types = dict()
+
+    def __init__(self, data):
+        self.init_model(data)
