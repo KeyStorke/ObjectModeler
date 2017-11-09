@@ -51,8 +51,6 @@ class _PrototypeDictObjectModel:
             return
 
         for ordinal, var_type in enumerate(var_types):
-            if not callable(var_type) and var_type is not None:
-                raise TypeError('{} is not callable'.format(type(var_type).__name__))
 
             if check_for_instance(var_type, value):
                 setattr(self, key, value)

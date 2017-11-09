@@ -1,3 +1,6 @@
+from typing import List, Tuple
+
+
 def check_for_instance(var_type: type or None, var: object) -> bool:
     """ checking an instance of
 
@@ -82,6 +85,20 @@ def contain_all_elements(lst: list, other_lst: list) -> bool:
     return True
 
 
+def is_correct_datatypes(datatypes: List[Tuple]) -> bool:
+    """ check list of data types for correct
+
+    :param datatypes: list of data types
+    :return: check result
+    """
+    if not datatypes:
+        return True
+
+    flatten = lambda l: [item for sublist in l for item in sublist]
+    _datatypes = flatten(datatypes)
+    return all(map(lambda datatype: callable(datatype) or datatype is None, _datatypes))
+
+
 class ObjectModelSlotsMetaclass(type):
     def __new__(mcs, name, bases, cls_dict: dict):
         # for all fields must be defined data type
@@ -90,6 +107,9 @@ class ObjectModelSlotsMetaclass(type):
         # all fields must be defined in all_fields
         assert contain_all_elements(cls_dict['all_fields'], cls_dict['optional_fields'])
         assert contain_all_elements(cls_dict['all_fields'], cls_dict['default_values'].keys())
+
+        # validate datatypes (all types must be callable or None)
+        assert is_correct_datatypes(cls_dict['fields_types'].values())
 
         cls_dict['__slots__'] = cls_dict['all_fields']
         cls_dict['_optional_fields'] = cls_dict['optional_fields']

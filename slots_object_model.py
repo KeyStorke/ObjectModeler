@@ -16,8 +16,6 @@ class _PrototypeSlotsObjectModel:
 
     def init_model(self, kwargs):
         for item in self.__slots__:
-            if item not in self._fields_types.keys():
-                raise TypeError('Unknown type for {}'.format(item))
             if self._item_not_found(item, kwargs):
                 raise ValueError('required field {}'.format(item))
             if self._optional_item_not_found(item, kwargs):
@@ -59,8 +57,6 @@ class _PrototypeSlotsObjectModel:
             return
 
         for ordinal, var_type in enumerate(var_types):
-            if not callable(var_type) and var_type is not None:
-                raise TypeError('{} is not callable'.format(type(var_type).__name__))
 
             if check_for_instance(var_type, value):
                 setattr(self, key, value)
