@@ -81,10 +81,6 @@ class GenericDictObjectModel(_PrototypeDictObjectModel, metaclass=ObjectModelDic
 
 
 class PrettyDictObjectModel(_PrototypeDictObjectModel, metaclass=PrettyObjectModelDictMetaclass):
-    all_fields = tuple()
-    optional_fields = tuple()
-    default_values = dict()
-    fields_types = dict()
 
     def __init__(self, data):
         self.init_model(data)

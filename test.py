@@ -50,6 +50,7 @@ class B(GenericDictObjectModel):
     def __init__(self, data):
         self.init_model(data)
 
+
 class C(PrettyDictObjectModel):
     a = Field(types=(str,), default_value=None)
     b = Field(types=(str,), optional=True)
@@ -105,6 +106,7 @@ class TestGenericDictObjectModel(unittest.TestCase):
 
     def test_name(self):
         self.assertEqual(self.a.__name__(), 'B')
+
 
 class TestPrettyDictObjectModel(unittest.TestCase):
     def setUp(self):
