@@ -37,4 +37,36 @@ print(user)
 print(user.email)
 # user@mail.net
 ```
+
+Or like django models:
+```python
+class User(GenericSlotsObjectModel):
+    name = Field(types=(str,))
+    password_hash = Field(types=(bytearray,))
+    email = Field(types=(str,))
+    uid = Field(types=(UserId,))
+    weight = Field(types=(str,), optional=True)
+    status = Field(types=(str,), default_value=READER_STATUS)
+
+doc = mongo.FindLastUser() # doc is just simple dict
+
+print(doc)
+
+#{
+#  'name': 'Nick',
+#  'password_hash': b'smth hash',
+#  'email': 'user@mail.net',
+#  'uid': UserId(1234567)
+#}
+
+
+user = User(doc)
+
+print(user)
+# {'email': 'user@mail.net', 'status': 0, 'name': 'Nick', 'password_hash': bytearray(b'smth hash'), 'uid': '1'}
+
+print(user.email)
+# user@mail.net
+```
+
 Enjoy :)
