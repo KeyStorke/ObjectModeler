@@ -3,6 +3,11 @@ from common import check_for_instance, contain_none, contain_str_type, convert_t
 
 
 class _PrototypeDictObjectModel:
+    _all_fields = tuple()
+    _fields_types = dict()
+    _default_values = dict()
+    _optional_fields = dict()
+
     def __repr__(self):
         return str(self.to_dict())
 
