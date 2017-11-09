@@ -2,7 +2,7 @@ from object_modeler.common import check_for_instance, contain_none, contain_str_
     ObjectModelSlotsMetaclass
 
 
-class _PrototypeSlotsObjectModel:
+class _PrototypeSlotsObjectModel(object):
     __slots__ = tuple()
     _fields_types = dict()
     _default_values = dict()
@@ -79,7 +79,8 @@ class _PrototypeSlotsObjectModel:
             )
 
 
-class GenericSlotsObjectModel(_PrototypeSlotsObjectModel, metaclass=ObjectModelSlotsMetaclass):
+class GenericSlotsObjectModel(_PrototypeSlotsObjectModel):
+    __metaclass__ = ObjectModelSlotsMetaclass
     all_fields = tuple()
     optional_fields = tuple()
     default_values = dict()

@@ -2,7 +2,7 @@ from object_modeler.common import check_for_instance, contain_none, contain_str_
     ObjectModelDictMetaclass, PrettyObjectModelDictMetaclass
 
 
-class _PrototypeDictObjectModel:
+class _PrototypeDictObjectModel(object):
     _all_fields = tuple()
     _fields_types = dict()
     _default_values = dict()
@@ -73,14 +73,16 @@ class _PrototypeDictObjectModel:
             )
 
 
-class GenericDictObjectModel(_PrototypeDictObjectModel, metaclass=ObjectModelDictMetaclass):
+class GenericDictObjectModel(_PrototypeDictObjectModel):
+    __metaclass__ = ObjectModelDictMetaclass
     all_fields = tuple()
     optional_fields = tuple()
     default_values = dict()
     fields_types = dict()
 
 
-class PrettyDictObjectModel(_PrototypeDictObjectModel, metaclass=PrettyObjectModelDictMetaclass):
+class PrettyDictObjectModel(_PrototypeDictObjectModel):
+    __metaclass__ = PrettyObjectModelDictMetaclass
     all_fields = tuple()
     optional_fields = tuple()
     default_values = dict()

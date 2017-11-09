@@ -1,8 +1,6 @@
-from typing import List, Tuple
-
 class Undefined: pass
 
-def check_for_instance(var_type: type or None, var: object) -> bool:
+def check_for_instance(var_type, var):
     """ checking an instance of
 
     :param var_type: any type
@@ -12,7 +10,7 @@ def check_for_instance(var_type: type or None, var: object) -> bool:
     return isinstance(var_type, type) and isinstance(var, var_type)
 
 
-def is_last_element(ordinal: int, lst: list) -> bool:
+def is_last_element(ordinal, lst):
     """ checking whether an last element of list
 
     :param ordinal: ordinal element in list
@@ -22,7 +20,7 @@ def is_last_element(ordinal: int, lst: list) -> bool:
     return ordinal + 1 == len(lst)
 
 
-def convert_type(var_type: type, var: object) -> (object, Exception):
+def convert_type(var_type, var):
     """ convert value to type
 
     :param var_type: type for convert
@@ -36,7 +34,7 @@ def convert_type(var_type: type, var: object) -> (object, Exception):
         return var, e
 
 
-def contain_str_type(lst: list) -> bool:
+def contain_str_type(lst):
     """ check contain str in list
 
     :param lst: list for checking
@@ -45,7 +43,7 @@ def contain_str_type(lst: list) -> bool:
     return str in lst
 
 
-def contain_none(lst: list) -> bool:
+def contain_none(lst):
     """ check contain None in list
 
     :type lst: list for checking
@@ -54,7 +52,7 @@ def contain_none(lst: list) -> bool:
     return None in lst
 
 
-def is_empty_string(var: object) -> bool:
+def is_empty_string(var):
     """ check for empty string
 
     :param var:
@@ -63,7 +61,7 @@ def is_empty_string(var: object) -> bool:
     return not var and isinstance(var, str)
 
 
-def compare_lists(lst: list, other_lst: list) -> bool:
+def compare_lists(lst, other_lst):
     """ compare two lists
 
     :param lst: list for compare
@@ -73,7 +71,7 @@ def compare_lists(lst: list, other_lst: list) -> bool:
     return sorted(lst) == sorted(other_lst)
 
 
-def contain_all_elements(lst: list, other_lst: list) -> bool:
+def contain_all_elements(lst, other_lst):
     """ checking whether the second contains a list of all the elements of the first
 
     :param lst: first list
@@ -86,7 +84,7 @@ def contain_all_elements(lst: list, other_lst: list) -> bool:
     return True
 
 
-def is_correct_datatypes(datatypes: List[Tuple]) -> bool:
+def is_correct_datatypes(datatypes):
     """ check list of data types for correct
 
     :param datatypes: list of data types
@@ -123,7 +121,7 @@ def new_slots_class(mcs, name, bases, cls_dict):
 
     return type.__new__(mcs, name, bases, cls_dict)
 
-def new_dict_class(mcs, name, bases, cls_dict: dict):
+def new_dict_class(mcs, name, bases, cls_dict):
     checking_cls_dictionary(cls_dict)
 
     cls_dict['_all_fields'] = cls_dict['all_fields']
@@ -139,24 +137,24 @@ def new_dict_class(mcs, name, bases, cls_dict: dict):
     return type.__new__(mcs, name, bases, cls_dict)
 
 class ObjectModelSlotsMetaclass(type):
-    def __new__(mcs, name, bases, cls_dict: dict):
+    def __new__(mcs, name, bases, cls_dict):
         return new_slots_class(mcs, name, bases, cls_dict)
 
 
 class ObjectModelDictMetaclass(type):
-    def __new__(mcs, name, bases, cls_dict: dict):
+    def __new__(mcs, name, bases, cls_dict):
         return new_dict_class(mcs, name, bases, cls_dict)
 
 
 class Field:
-    def __init__(self, types: tuple, optional: bool = False, default_value: object = Undefined()):
+    def __init__(self, types, optional = False, default_value = Undefined()):
         self.types = types
         self.optional = optional
         self.default_value = default_value
 
 
 class PrettyObjectModelDictMetaclass(type):
-    def __new__(mcs, name, bases, cls_dict: dict):
+    def __new__(mcs, name, bases, cls_dict):
         items = list()
 
         all_fields = list()
