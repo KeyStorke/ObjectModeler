@@ -40,7 +40,7 @@ print(user.email)
 
 Or like django models:
 ```python
-class User(GenericSlotsObjectModel):
+class User(PrettyDictObjectModel):
     name = Field(types=(str,))
     password_hash = Field(types=(bytearray,))
     email = Field(types=(str,))
