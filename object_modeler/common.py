@@ -1,6 +1,8 @@
 from typing import List, Tuple
 
+
 class Undefined: pass
+
 
 def check_for_instance(var_type: type or None, var: object) -> bool:
     """ checking an instance of
@@ -99,6 +101,7 @@ def is_correct_datatypes(datatypes: List[Tuple]) -> bool:
     _datatypes = flatten(datatypes)
     return all(map(lambda datatype: callable(datatype) or datatype is None, _datatypes))
 
+
 def checking_cls_dictionary(cls_dict):
     # for all fields must be defined data type
     assert compare_lists(cls_dict['all_fields'], cls_dict['fields_types'].keys())
@@ -123,6 +126,7 @@ def new_slots_class(mcs, name, bases, cls_dict):
 
     return type.__new__(mcs, name, bases, cls_dict)
 
+
 def new_dict_class(mcs, name, bases, cls_dict: dict):
     checking_cls_dictionary(cls_dict)
 
@@ -137,6 +141,7 @@ def new_dict_class(mcs, name, bases, cls_dict: dict):
     cls_dict.pop('fields_types')
 
     return type.__new__(mcs, name, bases, cls_dict)
+
 
 class ObjectModelSlotsMetaclass(type):
     def __new__(mcs, name, bases, cls_dict: dict):
@@ -164,12 +169,17 @@ class PrettyObjectModelDictMetaclass(type):
         default_values = dict()
         fields_types = dict()
 
-        for item in cls_dict.items():
-            if isinstance(item, tuple) and len(item) == 2:
-                field_name, value = item
+        for base_class in bases:
+            if hasattr(base_class, '_all_fields'):
+                all_fields += getattr(base_class, '_all_fields')
+                optional_fields += getattr(base_class, '_optional_fields')
+                fields_types.update(getattr(base_class, '_fields_types'))
+                default_values.update(getattr(base_class, '_default_values'))
 
-                if isinstance(value, Field):
-                    items.append((field_name, value))
+        for field_name, value in cls_dict.items():
+
+            if isinstance(value, Field):
+                items.append((field_name, value))
 
         for field_name, field in items:
             all_fields.append(field_name)
@@ -181,12 +191,9 @@ class PrettyObjectModelDictMetaclass(type):
 
             fields_types[field_name] = field.types
 
-        cls_dict['all_fields'] = tuple(all_fields)
-        cls_dict['optional_fields'] = tuple(optional_fields)
+        cls_dict['all_fields'] = tuple(set(all_fields))
+        cls_dict['optional_fields'] = tuple(set(optional_fields))
         cls_dict['default_values'] = default_values
         cls_dict['fields_types'] = fields_types
 
         return new_dict_class(mcs, name, bases, cls_dict)
-
-
-

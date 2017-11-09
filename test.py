@@ -1,9 +1,8 @@
 import unittest
 
 from object_modeler import Field
-from object_modeler import GenericSlotsObjectModel
-
 from object_modeler import GenericDictObjectModel, PrettyDictObjectModel
+from object_modeler import GenericSlotsObjectModel
 
 test_dict = {
     'a': '1',
@@ -56,6 +55,19 @@ class C(PrettyDictObjectModel):
     b = Field(types=(str,), optional=True)
     c = Field(types=(str,))
     d = Field(types=(None,))
+
+
+class SomeClass:
+    @staticmethod
+    def test():
+        return "all correct"
+
+
+class C2(PrettyDictObjectModel):
+    X = "all correct"
+
+
+class D(C, C2, SomeClass): pass
 
 
 class TestGenericSlotsObjectModel(unittest.TestCase):
@@ -131,3 +143,34 @@ class TestPrettyDictObjectModel(unittest.TestCase):
 
     def test_name(self):
         self.assertEqual(self.a.__name__(), 'C')
+
+
+class TestInheritancePrettyDictObjectModel(unittest.TestCase):
+    def setUp(self):
+        self.a = D(test_dict)
+
+    def test_constructor(self):
+        self.assertEqual(self.a.a, '1')
+        self.assertEqual(self.a.b, 'q')
+        self.assertEqual(self.a.c, 'None')
+        self.assertEqual(self.a.d, None)
+
+    def test_mutable(self):
+        self.a.x = 1
+        self.assertEqual(self.a.x, 1)
+
+    def test_overhead_data_in_constructor(self):
+        with self.assertRaises(AttributeError):
+            return self.a.O
+
+    def test_to_dict(self):
+        self.assertDictEqual(correct_dict, self.a.to_dict())
+
+    def test_name(self):
+        self.assertEqual(self.a.__name__(), 'D')
+
+    def test_inherited_method(self):
+        self.assertEqual(self.a.test(), "all correct")
+
+    def test_inherited_attribute(self):
+        self.assertEqual(self.a.X, "all correct")
