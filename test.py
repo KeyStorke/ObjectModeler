@@ -64,8 +64,7 @@ class TestGenericSlotsObjectModel(unittest.TestCase):
 
     def test_overhead_data_in_constructor(self):
         with self.assertRaises(AttributeError):
-            a = self.a.O
-            print(a)
+            return self.a.O
 
     def test_to_dict(self):
         self.assertDictEqual(correct_dict, self.a.to_dict())
