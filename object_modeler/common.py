@@ -96,9 +96,16 @@ def is_correct_datatypes(datatypes):
     return all(map(lambda datatype: callable(datatype) or datatype is None, _datatypes))
 
 
+def check_for_empty_values(dictionary):
+    return all(dictionary.values())
+
+
 def checking_cls_dictionary(cls_dict):
     # for all fields must be defined data type
     assert compare_lists(cls_dict['all_fields'], cls_dict['fields_types'].keys())
+
+    # check for empty types
+    assert check_for_empty_values(cls_dict['fields_types'])
 
     # all fields must be defined in all_fields
     assert contain_all_elements(cls_dict['all_fields'], cls_dict['optional_fields'])
@@ -128,7 +135,6 @@ def new_slots_class(mcs, name, bases, cls_dict):
 
 def new_dict_class(mcs, name, bases, cls_dict):
     checking_cls_dictionary(cls_dict)
-
     cls_dict['_all_fields'] = cls_dict['all_fields']
     cls_dict['_optional_fields'] = cls_dict['optional_fields']
     cls_dict['_default_values'] = cls_dict['default_values']
