@@ -212,10 +212,18 @@ class ObjectModelDictMetaclass(type):
 
 
 class Field(object):
-    def __init__(self, types, optional = False, default_value = Undefined()):
-        self.types = types
+    def __init__(self, types=None, optional=False, default_value=Undefined()):
+        if types is not None:
+            self.type_list = types
+        else:
+            self.type_list = list()
+
         self.optional = optional
         self.default_value = default_value
+
+    def types(self, *args):
+        self.type_list += args
+        return self
 
 
 class PrettyObjectModelDictMetaclass(type):
@@ -247,7 +255,7 @@ class PrettyObjectModelDictMetaclass(type):
             if not isinstance(field.default_value, Undefined):
                 default_values[field_name] = field.default_value
 
-            fields_types[field_name] = field.types
+            fields_types[field_name] = field.type_list
 
         cls_dict['all_fields'] = tuple(set(all_fields))
         cls_dict['optional_fields'] = tuple(set(optional_fields))
@@ -286,7 +294,7 @@ class PrettyObjectModelSlotsMetaclass(type):
             if not isinstance(field.default_value, Undefined):
                 default_values[field_name] = field.default_value
 
-            fields_types[field_name] = field.types
+            fields_types[field_name] = field.type_list
 
         cls_dict['__slots__'] = tuple(set(all_fields))
         cls_dict['all_fields'] = tuple(set(all_fields))

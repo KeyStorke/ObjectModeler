@@ -51,10 +51,10 @@ class B(GenericDictObjectModel):
 
 
 class C(PrettyDictObjectModel):
-    a = Field(types=(str,), default_value=None)
-    b = Field(types=(str,), optional=True)
-    c = Field(types=(str,))
-    d = Field(types=(None,))
+    a = Field(default_value=None).types(str)
+    b = Field(optional=True).types(str)
+    c = Field().types(str)
+    d = Field().types(None)
 
 
 class SomeClass:
