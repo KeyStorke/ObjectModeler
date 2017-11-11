@@ -6,6 +6,10 @@ class Undefined: pass
 
 class ObjectModel:
     __slots__ = tuple()
+    _all_fields = tuple()
+    _fields_types = dict()
+    _default_values = dict()
+    _optional_fields = dict()
 
     def init_model(self, kwargs):
         for item in self._all_fields:

@@ -2,11 +2,6 @@ from object_modeler.common import ObjectModelDictMetaclass, PrettyObjectModelDic
 
 
 class _PrototypeDictObjectModel(ObjectModel):
-    _all_fields = tuple()
-    _fields_types = dict()
-    _default_values = dict()
-    _optional_fields = dict()
-
     def __repr__(self):
         return str(self.to_dict())
 

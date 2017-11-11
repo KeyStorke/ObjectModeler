@@ -3,10 +3,6 @@ from object_modeler.common import ObjectModelSlotsMetaclass, ObjectModel, Pretty
 
 class _PrototypeSlotsObjectModel(ObjectModel):
     __slots__ = tuple()
-    _all_fields = __slots__
-    _fields_types = dict()
-    _default_values = dict()
-    _optional_fields = dict()
 
     def __repr__(self):
         return str(self.to_dict())
