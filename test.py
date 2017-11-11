@@ -71,7 +71,6 @@ class D(C, C2, SomeClass): pass
 
 
 class E(PrettySlotsObjectModel):
-    __slots__ = tuple()
     a = Field(types=(str,), default_value=None)
     b = Field(types=(str,), optional=True)
     c = Field(types=(str,))
