@@ -1,7 +1,7 @@
-from object_modeler.common import ObjectModelDictMetaclass, PrettyObjectModelDictMetaclass, _ObjectModel
+from object_modeler.common import ObjectModelDictMetaclass, PrettyObjectModelDictMetaclass, ObjectModel
 
 
-class _PrototypeDictObjectModel(_ObjectModel):
+class _PrototypeDictObjectModel(ObjectModel):
     _all_fields = tuple()
     _fields_types = dict()
     _default_values = dict()

@@ -4,7 +4,7 @@ from typing import List, Tuple
 class Undefined: pass
 
 
-class _ObjectModel:
+class ObjectModel:
     __slots__ = tuple()
 
     def init_model(self, kwargs):
@@ -172,6 +172,10 @@ def new_slots_class(mcs, name, bases, cls_dict):
     cls_dict['_default_values'] = cls_dict['default_values']
     cls_dict['_fields_types'] = cls_dict['fields_types']
 
+    # conflicts __slots__ with class vars
+    for item in cls_dict['all_fields']:
+        cls_dict.pop(item, None)
+
     cls_dict.pop('all_fields')
     cls_dict.pop('optional_fields')
     cls_dict.pop('default_values')
@@ -250,3 +254,43 @@ class PrettyObjectModelDictMetaclass(type):
         cls_dict['fields_types'] = fields_types
 
         return new_dict_class(mcs, name, bases, cls_dict)
+
+
+class PrettyObjectModelSlotsMetaclass(type):
+    def __new__(mcs, name, bases, cls_dict: dict):
+        items = list()
+
+        all_fields = list()
+        optional_fields = list()
+        default_values = dict()
+        fields_types = dict()
+
+        for base_class in bases:
+            if hasattr(base_class, '_all_fields'):
+                all_fields += getattr(base_class, '_all_fields')
+                optional_fields += getattr(base_class, '_optional_fields')
+                fields_types.update(getattr(base_class, '_fields_types'))
+                default_values.update(getattr(base_class, '_default_values'))
+
+        for field_name, value in cls_dict.items():
+
+            if isinstance(value, Field):
+                items.append((field_name, value))
+
+        for field_name, field in items:
+            all_fields.append(field_name)
+            if field.optional:
+                optional_fields.append(field_name)
+
+            if not isinstance(field.default_value, Undefined):
+                default_values[field_name] = field.default_value
+
+            fields_types[field_name] = field.types
+
+        cls_dict['__slots__'] = tuple(set(all_fields))
+        cls_dict['all_fields'] = tuple(set(all_fields))
+        cls_dict['optional_fields'] = tuple(set(optional_fields))
+        cls_dict['default_values'] = default_values
+        cls_dict['fields_types'] = fields_types
+
+        return new_slots_class(mcs, name, bases, cls_dict)

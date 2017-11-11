@@ -1,7 +1,7 @@
-from object_modeler.common import ObjectModelSlotsMetaclass, _ObjectModel
+from object_modeler.common import ObjectModelSlotsMetaclass, ObjectModel, PrettyObjectModelSlotsMetaclass
 
 
-class _PrototypeSlotsObjectModel(_ObjectModel):
+class _PrototypeSlotsObjectModel(ObjectModel):
     __slots__ = tuple()
     _all_fields = __slots__
     _fields_types = dict()
@@ -31,3 +31,10 @@ class GenericSlotsObjectModel(_PrototypeSlotsObjectModel, metaclass=ObjectModelS
     optional_fields = tuple()
     default_values = dict()
     fields_types = dict()
+
+
+class PrettySlotsObjectModel(_PrototypeSlotsObjectModel, metaclass=PrettyObjectModelSlotsMetaclass):
+    __slots__ = tuple()
+
+    def __init__(self, data):
+        self.init_model(data)
