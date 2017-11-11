@@ -1,62 +1,3 @@
-class Undefined(object): pass
-
-
-class ObjectModel(object):
-    __slots__ = tuple()
-    _all_fields = tuple()
-    _fields_types = dict()
-    _default_values = dict()
-    _optional_fields = dict()
-
-    def init_model(self, kwargs):
-        for item in self._all_fields:
-            if item not in kwargs and item not in self._default_values and item not in self._optional_fields:
-                raise ValueError('required field {}'.format(item))
-
-            if item in kwargs:
-                value = kwargs.get(item)
-            else:
-                value = self._default_values.get(item)
-
-            self._set_item(item, value)
-
-    def _set_item(self, key, value):
-
-        # if value is None
-        if type(value) in self._fields_types[key]:
-            setattr(self, key, value)
-            return
-
-        var_types = self._fields_types[key]
-
-        if is_empty_string(value):
-
-            if contain_none(var_types):
-                setattr(self, key, None)
-                return
-
-            if contain_str_type(var_types):
-                setattr(self, key, "")
-                return
-
-        err = None
-
-        for var_type in var_types:
-
-            value, err = convert_type(var_type, value)
-
-            if not err:
-                setattr(self, key, value)
-                return
-
-        types = [str(vtype) for vtype in var_types]
-        types = ' or '.join(types)
-        raise TypeError(
-            '`{}` must be type {}, got {} (`{}`) \n last err: {}'.format(key, types, type(value).__name__, value,
-                                                                         err)
-        )
-
-
 def check_for_instance(var_type, var):
     """ checking an instance of
 
@@ -199,6 +140,65 @@ def new_dict_class(mcs, name, bases, cls_dict):
     cls_dict.pop('fields_types')
 
     return type.__new__(mcs, name, bases, cls_dict)
+
+
+class Undefined(object): pass
+
+
+class ObjectModel(object):
+    __slots__ = tuple()
+    _all_fields = tuple()
+    _fields_types = dict()
+    _default_values = dict()
+    _optional_fields = dict()
+
+    def init_model(self, kwargs):
+        for item in self._all_fields:
+            if item not in kwargs and item not in self._default_values and item not in self._optional_fields:
+                raise ValueError('required field {}'.format(item))
+
+            if item in kwargs:
+                value = kwargs.get(item)
+            else:
+                value = self._default_values.get(item)
+
+            self._set_item(item, value)
+
+    def _set_item(self, key, value):
+
+        # if value is None
+        if type(value) in self._fields_types[key]:
+            setattr(self, key, value)
+            return
+
+        var_types = self._fields_types[key]
+
+        if is_empty_string(value):
+
+            if contain_none(var_types):
+                setattr(self, key, None)
+                return
+
+            if contain_str_type(var_types):
+                setattr(self, key, "")
+                return
+
+        err = None
+
+        for var_type in var_types:
+
+            value, err = convert_type(var_type, value)
+
+            if not err:
+                setattr(self, key, value)
+                return
+
+        types = [str(vtype) for vtype in var_types]
+        types = ' or '.join(types)
+        raise TypeError(
+            '`{}` must be type {}, got {} (`{}`) \n last err: {}'.format(key, types, type(value).__name__, value,
+                                                                         err)
+        )
 
 
 class ObjectModelSlotsMetaclass(type):
