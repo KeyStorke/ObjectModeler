@@ -208,9 +208,9 @@ class TestInheritancePrettySlotsObjectModel(unittest.TestCase):
             return self.a.O
 
     def test_to_dict(self):
-        test_dict = self.a.to_dict()
-        test_dict.pop('e', None)
-        self.assertDictEqual(correct_dict, test_dict)
+        _test_dict = self.a.to_dict()
+        _test_dict.pop('e', None)
+        self.assertDictEqual(correct_dict, _test_dict)
 
     def test_inheritance_var(self):
         self.assertEqual(self.a.e, 10)
