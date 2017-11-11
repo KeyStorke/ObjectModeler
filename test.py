@@ -67,7 +67,10 @@ class C2(PrettyDictObjectModel):
     X = "all correct"
 
 
-class C3(PrettySlotsObjectModel):
+class D(C, C2, SomeClass): pass
+
+
+class E(PrettySlotsObjectModel):
     __slots__ = tuple()
     a = Field(types=(str,), default_value=None)
     b = Field(types=(str,), optional=True)
@@ -75,7 +78,15 @@ class C3(PrettySlotsObjectModel):
     d = Field(types=(None,))
 
 
-class D(C, C2, SomeClass): pass
+class E2(E):
+    e = Field(types=(int,), default_value=10)
+
+    def test(self):
+        return 21
+
+    @staticmethod
+    def static_test():
+        return 31
 
 
 class TestGenericSlotsObjectModel(unittest.TestCase):
@@ -155,7 +166,7 @@ class TestPrettyDictObjectModel(unittest.TestCase):
 
 class TestPrettySlotsObjectModel(unittest.TestCase):
     def setUp(self):
-        self.a = C3(test_dict)
+        self.a = E(test_dict)
 
     def test_constructor(self):
         self.assertEqual(self.a.a, '1')
@@ -175,7 +186,41 @@ class TestPrettySlotsObjectModel(unittest.TestCase):
         self.assertDictEqual(correct_dict, self.a.to_dict())
 
     def test_name(self):
-        self.assertEqual(self.a.__name__(), 'C3')
+        self.assertEqual(self.a.__name__(), 'E')
+
+
+class TestInheritancePrettySlotsObjectModel(unittest.TestCase):
+    def setUp(self):
+        self.a = E2(test_dict)
+
+    def test_constructor(self):
+        self.assertEqual(self.a.a, '1')
+        self.assertEqual(self.a.b, 'q')
+        self.assertEqual(self.a.c, 'None')
+        self.assertEqual(self.a.d, None)
+
+    def test_mutable(self):
+        with self.assertRaises(AttributeError):
+            self.a.x = 1
+
+    def test_overhead_data_in_constructor(self):
+        with self.assertRaises(AttributeError):
+            return self.a.O
+
+    def test_to_dict(self):
+        test_dict = self.a.to_dict()
+        test_dict.pop('e', None)
+        self.assertDictEqual(correct_dict, test_dict)
+
+    def test_inheritance_var(self):
+        self.assertEqual(self.a.e, 10)
+
+    def test_name(self):
+        self.assertEqual(self.a.__name__(), 'E2')
+
+    def test_inherited_method(self):
+        self.assertEqual(self.a.test(), 21)
+        self.assertEqual(self.a.static_test(), 31)
 
 
 class TestInheritancePrettyDictObjectModel(unittest.TestCase):
