@@ -8,5 +8,5 @@ setup(
     license='MIT',
     author='Nickolay Ovdienko',
     author_email='Nickolay.Ovdienko@emc.com',
-    description='Easy and simply define objects schemes in applications'
+    description='Easy and simply define objects schemes in applications', requires=['six']
 )

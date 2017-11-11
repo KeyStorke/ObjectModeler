@@ -1,4 +1,5 @@
 from object_modeler.common import ObjectModelDictMetaclass, PrettyObjectModelDictMetaclass, ObjectModel
+from six import with_metaclass
 
 
 class _PrototypeDictObjectModel(ObjectModel):
@@ -12,16 +13,14 @@ class _PrototypeDictObjectModel(ObjectModel):
         return self.__dict__
 
 
-class GenericDictObjectModel(_PrototypeDictObjectModel):
-    __metaclass__ = ObjectModelDictMetaclass
+class GenericDictObjectModel(with_metaclass(ObjectModelDictMetaclass, _PrototypeDictObjectModel)):
     all_fields = tuple()
     optional_fields = tuple()
     default_values = dict()
     fields_types = dict()
 
 
-class PrettyDictObjectModel(_PrototypeDictObjectModel):
-    __metaclass__ = PrettyObjectModelDictMetaclass
+class PrettyDictObjectModel(with_metaclass(PrettyObjectModelDictMetaclass, _PrototypeDictObjectModel)):
 
     def __init__(self, data):
         self.init_model(data)
