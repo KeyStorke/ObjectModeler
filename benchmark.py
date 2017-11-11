@@ -35,7 +35,7 @@ for _ in range(N):
     assert obj.a == '1'
     all_time += (t2 - t1)
 print('PrettySlotsObjectModel results:')
-print('     Average create object {} µ-sec'.format((all_time / N) / 10 ** -6))
+print('     Average create object {} micro sec'.format((all_time / N) / 10 ** -6))
 print('     Sum {} sec'.format(all_time))
 print('')
 
@@ -48,7 +48,7 @@ for _ in range(N):
     assert obj.a == '1'
     all_time += (t2 - t1)
 print('PrettyDictObjectModel results:')
-print('     Average create object {} µ-sec'.format((all_time / N) / 10 ** -6))
+print('     Average create object {} micro sec'.format((all_time / N) / 10 ** -6))
 print('     Sum {} sec'.format(all_time))
 print('')
 
@@ -62,7 +62,7 @@ for _ in range(N):
     all_time += (t2 - t1)
 
 print('Standard dict class results:')
-print('     Average create object {} µ-sec'.format((all_time / N) / 10 ** -6))
+print('     Average create object {} micro sec'.format((all_time / N) / 10 ** -6))
 print('     Sum {} sec'.format(all_time))
 print('')
 
@@ -76,6 +76,6 @@ for _ in range(N):
     all_time += (t2 - t1)
 
 print('Slots class results:')
-print('     Average create object {} µ-sec'.format((all_time / N) / 10 ** -6))
+print('     Average create object {} micro sec'.format((all_time / N) / 10 ** -6))
 print('     Sum {} sec'.format(all_time))
 print('')

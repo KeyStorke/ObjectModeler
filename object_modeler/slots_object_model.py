@@ -22,14 +22,16 @@ class _PrototypeSlotsObjectModel(ObjectModel):
         return result
 
 
-class GenericSlotsObjectModel(_PrototypeSlotsObjectModel, metaclass=ObjectModelSlotsMetaclass):
+class GenericSlotsObjectModel(_PrototypeSlotsObjectModel):
+    __metaclass__ = ObjectModelSlotsMetaclass
     all_fields = tuple()
     optional_fields = tuple()
     default_values = dict()
     fields_types = dict()
 
 
-class PrettySlotsObjectModel(_PrototypeSlotsObjectModel, metaclass=PrettyObjectModelSlotsMetaclass):
+class PrettySlotsObjectModel(_PrototypeSlotsObjectModel):
+    __metaclass__ = PrettyObjectModelSlotsMetaclass
     __slots__ = tuple()
 
     def __init__(self, data):

@@ -12,13 +12,16 @@ class _PrototypeDictObjectModel(ObjectModel):
         return self.__dict__
 
 
-class GenericDictObjectModel(_PrototypeDictObjectModel, metaclass=ObjectModelDictMetaclass):
+class GenericDictObjectModel(_PrototypeDictObjectModel):
+    __metaclass__ = ObjectModelDictMetaclass
     all_fields = tuple()
     optional_fields = tuple()
     default_values = dict()
     fields_types = dict()
 
 
-class PrettyDictObjectModel(_PrototypeDictObjectModel, metaclass=PrettyObjectModelDictMetaclass):
+class PrettyDictObjectModel(_PrototypeDictObjectModel):
+    __metaclass__ = PrettyObjectModelDictMetaclass
+
     def __init__(self, data):
         self.init_model(data)
