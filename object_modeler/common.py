@@ -29,9 +29,6 @@ def convert_type(var_type, var):
         value = var_type(var)
         return value, None
     except Exception as e:
-        import traceback as tb
-        tb.print_exc()
-
         return var, e
 
 
