@@ -193,17 +193,18 @@ class ObjectModel(object):
 
         for var_type in var_types:
 
-            value, err = convert_type(var_type, value)
+            if callable(var_type):
+                value, err = convert_type(var_type, value)
 
-            if not err:
-                setattr(self, key, value)
-                return
+                if not err:
+                    setattr(self, key, value)
+                    return
 
         types = [str(vtype) for vtype in var_types]
         types = ' or '.join(types)
         raise TypeError(
-            '`{}` must be type {}, got {} (`{}`) \n last err: {}'.format(key, types, type(value).__name__, value,
-                                                                         err)
+            '`{}` must be type {}, got {} (`{}`) \n last err: {}\n types: {}'.format(key, types, type(value).__name__, value,
+                                                                         err, var_types)
         )
 
 
