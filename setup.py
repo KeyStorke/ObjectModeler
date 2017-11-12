@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='object_modeler',
-    version='1.0',
+    version='0.0.1',
     packages=['object_modeler'],
     url='https://github.com/KeyStorke/ObjectModeler',
     license='MIT',
