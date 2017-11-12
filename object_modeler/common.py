@@ -173,7 +173,7 @@ class ObjectModel(object):
     def _set_item(self, key, value):
 
         # if value is None
-        if type(value) in self._fields_types[key]:
+        if type(value) in self._fields_types[key] or (value is None and value in self._fields_types[key]):
             setattr(self, key, value)
             return
 
