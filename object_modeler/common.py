@@ -29,6 +29,9 @@ def convert_type(var_type, var):
         value = var_type(var)
         return value, None
     except Exception as e:
+        import traceback as tb
+        tb.print_exc()
+
         return var, e
 
 
@@ -102,48 +105,48 @@ def check_for_empty_values(dictionary):
 
 def checking_cls_dictionary(cls_dict):
     # for all fields must be defined data type
-    assert compare_lists(cls_dict['all_fields'], cls_dict['fields_types'].keys())
+    assert compare_lists(cls_dict.get('all_fields', tuple()), cls_dict.get('fields_types', dict()).keys())
 
     # check for empty types
-    assert check_for_empty_values(cls_dict['fields_types'])
+    assert check_for_empty_values(cls_dict.get('fields_types', dict()))
 
     # all fields must be defined in all_fields
-    assert contain_all_elements(cls_dict['all_fields'], cls_dict['optional_fields'])
-    assert contain_all_elements(cls_dict['all_fields'], cls_dict['default_values'].keys())
+    assert contain_all_elements(cls_dict.get('all_fields', tuple()), cls_dict.get('optional_fields', tuple()))
+    assert contain_all_elements(cls_dict.get('all_fields', tuple()), cls_dict.get('default_values', dict()).keys())
 
 
 def new_slots_class(mcs, name, bases, cls_dict):
     checking_cls_dictionary(cls_dict)
 
-    cls_dict['__slots__'] = cls_dict['all_fields']
-    cls_dict['_all_fields'] = cls_dict['all_fields']
-    cls_dict['_optional_fields'] = cls_dict['optional_fields']
-    cls_dict['_default_values'] = cls_dict['default_values']
-    cls_dict['_fields_types'] = cls_dict['fields_types']
+    cls_dict['__slots__'] = cls_dict.get('all_fields', tuple())
+    cls_dict['_all_fields'] = cls_dict.get('all_fields', tuple())
+    cls_dict['_optional_fields'] = cls_dict.get('optional_fields', tuple())
+    cls_dict['_default_values'] = cls_dict.get('default_values', dict())
+    cls_dict['_fields_types'] = cls_dict.get('fields_types', dict())
 
     # conflicts __slots__ with class vars
     for item in cls_dict['all_fields']:
         cls_dict.pop(item, None)
 
-    cls_dict.pop('all_fields')
-    cls_dict.pop('optional_fields')
-    cls_dict.pop('default_values')
-    cls_dict.pop('fields_types')
+    cls_dict.pop('all_fields', None)
+    cls_dict.pop('optional_fields', None)
+    cls_dict.pop('default_values', None)
+    cls_dict.pop('fields_types', None)
 
     return type.__new__(mcs, name, bases, cls_dict)
 
 
 def new_dict_class(mcs, name, bases, cls_dict):
     checking_cls_dictionary(cls_dict)
-    cls_dict['_all_fields'] = cls_dict['all_fields']
-    cls_dict['_optional_fields'] = cls_dict['optional_fields']
-    cls_dict['_default_values'] = cls_dict['default_values']
-    cls_dict['_fields_types'] = cls_dict['fields_types']
+    cls_dict['_all_fields'] = cls_dict.get('all_fields', tuple())
+    cls_dict['_optional_fields'] = cls_dict.get('optional_fields', tuple())
+    cls_dict['_default_values'] = cls_dict.get('default_values', dict())
+    cls_dict['_fields_types'] = cls_dict.get('fields_types', dict())
 
-    cls_dict.pop('all_fields')
-    cls_dict.pop('optional_fields')
-    cls_dict.pop('default_values')
-    cls_dict.pop('fields_types')
+    cls_dict.pop('all_fields', None)
+    cls_dict.pop('optional_fields', None)
+    cls_dict.pop('default_values', None)
+    cls_dict.pop('fields_types', None)
 
     return type.__new__(mcs, name, bases, cls_dict)
 

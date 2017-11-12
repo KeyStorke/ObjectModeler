@@ -23,7 +23,7 @@ correct_dict = {
 class A(GenericSlotsObjectModel):
     all_fields = ('a', 'b', 'c', 'd')
     optional_fields = ('b',)
-    default_values = {'a': None}
+    # default_values = {'a': None}
     fields_types = {
         'a': (str,),
         'b': (str,),
