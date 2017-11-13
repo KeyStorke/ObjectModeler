@@ -160,8 +160,11 @@ class ObjectModel(object):
 
     def init_model(self, kwargs):
         for item in self._all_fields:
-            if item not in kwargs and item not in self._default_values and item not in self._optional_fields:
-                raise ValueError('required field {}'.format(item))
+            if item not in kwargs and item not in self._default_values:
+                if item not in self._optional_fields:
+                    raise ValueError('required field {}'.format(item))
+                else:
+                    continue
 
             if item in kwargs:
                 value = kwargs.get(item)
