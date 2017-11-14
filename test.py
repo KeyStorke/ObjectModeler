@@ -55,6 +55,7 @@ class C(PrettyDictObjectModel):
     b = Field(optional=True).types(str)
     c = Field().types(str)
     d = Field().types(None)
+    e = Field(optional=True).types(int)
 
 
 class SomeClass:
@@ -75,6 +76,7 @@ class E(PrettySlotsObjectModel):
     b = Field(types=(str,), optional=True)
     c = Field(types=(str,))
     d = Field(types=(None,))
+    e = Field(optional=True).types(int)
 
 
 class E2(E):
