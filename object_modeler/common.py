@@ -1,21 +1,4 @@
-def check_for_instance(var_type, var):
-    """ checking an instance of
-
-    :param var_type: any type
-    :param var: any object
-    :return: check result
-    """
-    return isinstance(var_type, type) and isinstance(var, var_type)
-
-
-def is_last_element(ordinal, lst):
-    """ checking whether an last element of list
-
-    :param ordinal: ordinal element in list
-    :param lst: list
-    :return: check result
-    """
-    return ordinal + 1 == len(lst)
+import traceback as tb
 
 
 def convert_type(var_type, var):
@@ -82,27 +65,18 @@ def contain_all_elements(lst, other_lst):
     return True
 
 
-def is_correct_datatypes(datatypes):
-    """ check list of data types for correct
-
-    :param datatypes: list of data types
-    :return: check result
-    """
-    if not datatypes:
-        return True
-
-    flatten = lambda l: [item for sublist in l for item in sublist]
-    _datatypes = flatten(datatypes)
-    return all(map(lambda datatype: callable(datatype) or datatype is None, _datatypes))
-
-
 def check_for_empty_values(dictionary):
     return all(dictionary.values())
 
 
 def checking_cls_dictionary(cls_dict):
     # for all fields must be defined data type
-    assert compare_lists(cls_dict.get('all_fields', tuple()), cls_dict.get('fields_types', dict()).keys())
+    if not compare_lists(cls_dict.get('all_fields', tuple()), cls_dict.get('fields_types', dict()).keys()):
+        all_fields = tuple(cls_dict.get('all_fields', tuple()))
+        if len(set(all_fields)) != len(all_fields):
+            duplicate_field_names = set([name for name in all_fields if all_fields.count(name) > 1])
+            raise ValueError("Duplicate fields: {duplicate_fields}".format(
+                duplicate_fields=duplicate_field_names))
 
     # check for empty types
     assert check_for_empty_values(cls_dict.get('fields_types', dict()))
@@ -113,7 +87,10 @@ def checking_cls_dictionary(cls_dict):
 
 
 def new_slots_class(mcs, name, bases, cls_dict):
-    checking_cls_dictionary(cls_dict)
+    try:
+        checking_cls_dictionary(cls_dict)
+    except Exception as e:
+        raise Exception('{} in class {}'.format(e, name))
 
     cls_dict['__slots__'] = cls_dict.get('all_fields', tuple())
     cls_dict['_all_fields'] = cls_dict.get('all_fields', tuple())
@@ -134,7 +111,11 @@ def new_slots_class(mcs, name, bases, cls_dict):
 
 
 def new_dict_class(mcs, name, bases, cls_dict):
-    checking_cls_dictionary(cls_dict)
+    try:
+        checking_cls_dictionary(cls_dict)
+    except Exception as e:
+        raise Exception('{} in class {}'.format(e, name))
+
     cls_dict['_all_fields'] = cls_dict.get('all_fields', tuple())
     cls_dict['_optional_fields'] = cls_dict.get('optional_fields', tuple())
     cls_dict['_default_values'] = cls_dict.get('default_values', dict())
@@ -206,8 +187,9 @@ class ObjectModel(object):
         types = [str(vtype) for vtype in var_types]
         types = ' or '.join(types)
         raise TypeError(
-            '`{}` must be type {}, got {} (`{}`) \n last err: {}\n types: {}'.format(key, types, type(value).__name__, value,
-                                                                         err, var_types)
+            '`{}` must be type {}, got {} (`{}`) \n last err: {}\n types: {}'.format(key, types, type(value).__name__,
+                                                                                     value,
+                                                                                     err, var_types)
         )
 
 

@@ -26,7 +26,7 @@ class SomeClass4:
                 setattr(self, i, some_dict[i])
 
 
-def test_it(cls, name):
+def benchmark_it(cls, name):
     some_dict = {'a': '1'}
     N = 10 ** 6
     all_time = 0
@@ -42,7 +42,7 @@ def test_it(cls, name):
     print('     Sum {} sec'.format(all_time))
     print('')
 
-test_it(SomeClass, 'PrettySlotsObjectModel')
-test_it(SomeClass2, 'PrettyDictObjectModel')
-test_it(SomeClass3, 'Standard dict class')
-test_it(SomeClass4, 'Standard slots class')
+benchmark_it(SomeClass, 'PrettySlotsObjectModel')
+benchmark_it(SomeClass2, 'PrettyDictObjectModel')
+benchmark_it(SomeClass3, 'Standard dict class')
+benchmark_it(SomeClass4, 'Standard slots class')
