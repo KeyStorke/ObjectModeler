@@ -85,46 +85,36 @@ def checking_cls_dictionary(cls_dict):
     assert contain_all_elements(cls_dict.get('all_fields', tuple()), cls_dict.get('optional_fields', tuple()))
     assert contain_all_elements(cls_dict.get('all_fields', tuple()), cls_dict.get('default_values', dict()).keys())
 
-
-def new_slots_class(mcs, name, bases, cls_dict):
+def prepare_new_class(cls_dict, name):
     try:
         checking_cls_dictionary(cls_dict)
     except Exception as e:
         raise Exception('{} in class {}'.format(e, name))
 
-    cls_dict['__slots__'] = cls_dict.get('all_fields', tuple())
     cls_dict['_all_fields'] = cls_dict.get('all_fields', tuple())
     cls_dict['_optional_fields'] = cls_dict.get('optional_fields', tuple())
     cls_dict['_default_values'] = cls_dict.get('default_values', dict())
     cls_dict['_fields_types'] = cls_dict.get('fields_types', dict())
 
-    # conflicts __slots__ with class vars
-    for item in cls_dict['all_fields']:
-        cls_dict.pop(item, None)
-
     cls_dict.pop('all_fields', None)
     cls_dict.pop('optional_fields', None)
     cls_dict.pop('default_values', None)
     cls_dict.pop('fields_types', None)
+
+def new_slots_class(mcs, name, bases, cls_dict):
+    prepare_new_class(cls_dict, name)
+
+    cls_dict['__slots__'] = cls_dict.get('_all_fields', tuple())
+
+    # conflicts __slots__ with class vars
+    for item in cls_dict['__slots__']:
+        cls_dict.pop(item, None)
 
     return type.__new__(mcs, name, bases, cls_dict)
 
 
 def new_dict_class(mcs, name, bases, cls_dict):
-    try:
-        checking_cls_dictionary(cls_dict)
-    except Exception as e:
-        raise Exception('{} in class {}'.format(e, name))
-
-    cls_dict['_all_fields'] = cls_dict.get('all_fields', tuple())
-    cls_dict['_optional_fields'] = cls_dict.get('optional_fields', tuple())
-    cls_dict['_default_values'] = cls_dict.get('default_values', dict())
-    cls_dict['_fields_types'] = cls_dict.get('fields_types', dict())
-
-    cls_dict.pop('all_fields', None)
-    cls_dict.pop('optional_fields', None)
-    cls_dict.pop('default_values', None)
-    cls_dict.pop('fields_types', None)
+    prepare_new_class(cls_dict, name)
 
     return type.__new__(mcs, name, bases, cls_dict)
 
