@@ -6,4 +6,4 @@ python:
 install:
   - pip install .
 
-script: setup.py test
+script: python setup.py test
