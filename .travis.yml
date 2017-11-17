@@ -13,5 +13,6 @@ python:
 
 install:
   - pip install .
+  - pip install pytest
 
 script: pytest
