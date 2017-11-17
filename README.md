@@ -1,72 +1,78 @@
-This project use for define your object models in applications, just example:
+# ObjectModeler
+---
+[![Build Status](https://travis-ci.org/KeyStorke/ObjectModeler.svg?branch=master)](https://travis-ci.org/KeyStorke/ObjectModeler)
+ObjectModeler is an open source library for define object models in applications.
+
+## Features
+* Inheritance a fields
+* Type control
+* Set default values
+* Ignore undefined fields on initialize objects
+* Integrity control for models (only slots-based classes)
+* Serialisation a objects in dict
+
+## Examples
+
+### Define model
 ```python
-class User(GenericSlotsObjectModel):
-    all_fields = ('name', 'password_hash', 'email', 'uid', 'weight', 'status')
-    optional_fields = ('weight',)
-    default_values = {'status': READER_STATUS} # READER_STATUS = 0
-    fields_types = {
-        'name': (str,),
-        'password_hash': (bytearray,),
-        'email': (str,),
-        'uid': (UserId,),
-        'weight': (int,),
-        'status': (UserStatus,)
-    }
+import time
 
-    def __init__(self, data):
-        self.init_model(data)
-        InCache(self.uid)
+from object_modeler import PrettySlotsObjectModel, Field
 
-doc = mongo.FindLastUser() # doc is just simple dict
-
-print(doc)
-
-#{
-#  'name': 'Nick',
-#  'password_hash': b'smth hash',
-#  'email': 'user@mail.net',
-#  'uid': UserId(1234567)
-#}
+WRITER = 0
+READER = 1
 
 
-user = User(doc)
+class GeneralUser(PrettySlotsObjectModel):
+    uid = Field().types(str)
+    name = Field(default_value='unnamed').types(str)
+    status = Field(default_value=READER).types(int)
+    last_online = Field(default_value=0).types(float)
+    status_text = Field(optional=True).types(str)
 
-print(user)
-# {'email': 'user@mail.net', 'status': 0, 'name': 'Nick', 'password_hash': bytearray(b'smth hash'), 'uid': '1'}
+    def is_online(self):
+        return self.last_online > time.time()-60
 
-print(user.email)
-# user@mail.net
 ```
 
-Or like django models:
-```python
-class User(PrettyDictObjectModel):
-    name = Field(types=(str,))
-    password_hash = Field(types=(bytearray,))
-    email = Field(types=(str,))
-    uid = Field(types=(UserId,))
-    weight = Field(types=(str,), optional=True)
-    status = Field(types=(str,), default_value=READER_STATUS)
-
-doc = mongo.FindLastUser() # doc is just simple dict
-
-print(doc)
-
-#{
-#  'name': 'Nick',
-#  'password_hash': b'smth hash',
-#  'email': 'user@mail.net',
-#  'uid': UserId(1234567)
-#}
-
-
-user = User(doc)
-
-print(user)
-# {'email': 'user@mail.net', 'status': 0, 'name': 'Nick', 'password_hash': bytearray(b'smth hash'), 'uid': '1'}
-
-print(user.email)
-# user@mail.net
+### Inheritance models
+Support inherinatce fields and methods
+``` python
+class ExternalUser(GeneralUser):
+    external_service = Field().types(str)
+    access_token = Field().types(str)
 ```
 
-Enjoy :)
+### Init models from dict
+Ignore parameters wich undefined in model (like `responce_id`) and type control (`uid` will be cast to `str`)
+``` python
+any_dict = {
+    'uid'             : 10,
+    'name'            : 'Nick',
+    'status'          : WRITER,
+    'last_online'     : 1510920503.8094354,
+    'status_text'     : 'LSS: SIN, ACK, FIN',
+    'external_service': 'Github',
+    'access_token'    : 'some access token'
+    'responce_id'     : 'something_resp_id'
+}
+
+obj = ExternalUser(any_dict)
+```
+
+### Call inherited method
+``` python
+print('User {name} (id {uid}) is online {last_online}'.format(name=obj.name,
+                                                             uid=obj.uid,
+                                                             last_online='NOW' if obj.is_online()
+                                                             else time.ctime(obj.last_online)))
+```
+
+### Integrity control
+Control integrity objects (with `__slots__` mechanism help)
+``` python
+obj.username = 'other name'
+# AttributeError: 'ExternalUser' object has no attribute 'username'
+```
+
+For disable integrity control use `PrettyDictObjectModel`.
