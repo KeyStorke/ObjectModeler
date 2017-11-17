@@ -1,6 +1,6 @@
 # ObjectModeler
----
 [![Build Status](https://travis-ci.org/KeyStorke/ObjectModeler.svg?branch=master)](https://travis-ci.org/KeyStorke/ObjectModeler)
+
 ObjectModeler is an open source library for define object models in applications.
 
 ## Features
