@@ -1,6 +1,7 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
+    test_suite = 'test.py',
     name='object_modeler',
     version='0.0.9',
     packages=['object_modeler'],
