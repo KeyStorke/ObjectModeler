@@ -6,6 +6,8 @@ python:
   - "3.2"
   - "3.3"
   - "3.4"
+  - "3.5"
+  - "3.6"
   # PyPy support (experimental)
   - "pypy"  # PyPy2 2.5.0
   - "pypy3" # Pypy3 2.4.0
@@ -13,6 +15,5 @@ python:
 
 install:
   - pip install .
-  - pip install pytest
 
-script: pytest
+script: python test.py
