@@ -13,10 +13,10 @@ ObjectModeler is an open source library for definition the data models, control 
 * Serialisation an objects in dict
 
 ## Use-cases
-* Many abstractions in which need validating data types and integrity a model
+* Abstractions in which need validating data types and integrity a model
 * Data models which need inherit
-* Simply and clearly to define data types and objects schema
-* Use slots mechanism in models for optimize, but want a save clear code
+* Simply and clearly to define data types and objects schemes
+* Using a slots mechanism in models for optimize and save clear code
 
 ## Install
 ```
@@ -79,7 +79,7 @@ any_dict = {
 obj = ExternalUser(any_dict)
 ```
 
-### Call inherited method
+### Call a inherited method
 ``` python
 print('User {name} (id {uid}) is online {last_online}'.format(name=obj.name,
                                                              uid=obj.uid,
