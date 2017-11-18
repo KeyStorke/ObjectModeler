@@ -5,11 +5,11 @@ ObjectModeler is an open source library for define object models in applications
 
 ## Features
 * Inheritance a fields
-* Type control
+* Control of types
 * Set default values
-* Ignore undefined fields on initialize objects
+* Ignore of undefined fields on initialize objects
 * Integrity control for models (only slots-based classes)
-* Serialisation a objects in dict
+* Serialisation an objects in dict
 
 ## Examples
 
@@ -36,7 +36,7 @@ class GeneralUser(PrettySlotsObjectModel):
 ```
 
 ### Inheritance models
-Support inherinatce fields and methods
+Support inheritance fields and methods
 ``` python
 class ExternalUser(GeneralUser):
     external_service = Field().types(str)
