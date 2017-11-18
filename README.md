@@ -1,7 +1,6 @@
 # ObjectModeler
-[![Build Status](https://travis-ci.org/KeyStorke/ObjectModeler.svg?branch=master)](https://travis-ci.org/KeyStorke/ObjectModeler)
-
-ObjectModeler is an open source library for define object models in applications.
+[![Build Status](https://travis-ci.org/KeyStorke/ObjectModeler.svg?branch=master)](https://travis-ci.org/KeyStorke/ObjectModeler)   [![PyPI version](https://badge.fury.io/py/object_modeler.svg)](https://badge.fury.io/py/object_modeler) 
+ObjectModeler is an open source library for definition the data models, control a types and control a integrity of data models.
 
 ## Features
 * Inheritance a fields
@@ -11,7 +10,25 @@ ObjectModeler is an open source library for define object models in applications
 * Integrity control for models (only slots-based classes)
 * Serialisation an objects in dict
 
-## Examples
+## Use-cases
+* Many abstractions in which need validating data types and integrity a model
+* Data models which need inherit
+* Simply and clearly to define data types and objects schema
+* Use slots mechanism in models for optimize, but want a save clear code
+
+## Install
+```
+pip install object_modeler
+```
+
+## Tests
+```
+git clone https://github.com/KeyStorke/ObjectModeler
+cd ObjectModeler
+python setup.py test
+```
+
+## Usage 
 
 ### Define model
 ```python
@@ -44,7 +61,7 @@ class ExternalUser(GeneralUser):
 ```
 
 ### Init models from dict
-Ignore parameters wich undefined in model (like `responce_id`) and type control (`uid` will be cast to `str`)
+Ignore (silently, without exceptions) parameters which undefined in model like `responce_id`, and control a types (`uid` will be cast to `str`).
 ``` python
 any_dict = {
     'uid'             : 10,
@@ -68,11 +85,11 @@ print('User {name} (id {uid}) is online {last_online}'.format(name=obj.name,
                                                              else time.ctime(obj.last_online)))
 ```
 
-### Integrity control
+### Integrity control in runtime
 Control integrity objects (with `__slots__` mechanism help)
 ``` python
 obj.username = 'other name'
 # AttributeError: 'ExternalUser' object has no attribute 'username'
 ```
 
-For disable integrity control use `PrettyDictObjectModel`.
+For disable integrity control in runtime - use `PrettyDictObjectModel`. 
