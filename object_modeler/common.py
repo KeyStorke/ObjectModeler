@@ -63,11 +63,19 @@ def contain_all_elements(lst, other_lst):
 
 
 def check_for_empty_values(dictionary):
+    """ checking dict for empty values
+
+    :param dictionary: dict for checking
+    :return: check result
+    """
     return all(dictionary.values())
 
 
 def checking_cls_dictionary(cls_dict):
-    # for all fields must be defined data type
+    """ validate cls dictionary (cls.__dict__) for Model
+
+    :param cls_dict: dict for checking
+    """
     if not compare_lists(cls_dict.get('all_fields', tuple()), cls_dict.get('fields_types', dict()).keys()):
         all_fields = tuple(cls_dict.get('all_fields', tuple()))
         if len(set(all_fields)) != len(all_fields):
@@ -84,6 +92,11 @@ def checking_cls_dictionary(cls_dict):
 
 
 def prepare_new_class(cls_dict, name):
+    """ preparing a new class
+
+    :param cls_dict: class for preparing
+    :param name: class name
+    """
     try:
         checking_cls_dictionary(cls_dict)
     except Exception as e:
@@ -101,6 +114,14 @@ def prepare_new_class(cls_dict, name):
 
 
 def new_slots_class(mcs, name, bases, cls_dict):
+    """ create new __slots__-based class
+
+    :param mcs: metaclass
+    :param name: name of new class
+    :param bases: base classes
+    :param cls_dict: __dict__ of new class
+    :return: new object
+    """
     prepare_new_class(cls_dict, name)
 
     cls_dict['__slots__'] = cls_dict.get('_all_fields', tuple())
@@ -113,15 +134,25 @@ def new_slots_class(mcs, name, bases, cls_dict):
 
 
 def new_dict_class(mcs, name, bases, cls_dict):
+    """ create new class
+
+    :param mcs: metaclass
+    :param name: name of new class
+    :param bases: base classes
+    :param cls_dict: __dict__ of new class
+    :return: new object
+    """
     prepare_new_class(cls_dict, name)
 
     return type.__new__(mcs, name, bases, cls_dict)
 
 
-class Undefined(object): pass
+class Undefined(object):
+    """ Class for detect undefined values"""
 
 
 class BaseObjectModel(object):
+    """ Base class for all models """
     __slots__ = tuple()
     _all_fields = tuple()
     _fields_types = dict()
@@ -129,6 +160,10 @@ class BaseObjectModel(object):
     _optional_fields = dict()
 
     def init_model(self, kwargs):
+        """ initialization all fields
+
+        :param kwargs: data for initialization
+        """
         for item in self._all_fields:
             if item not in kwargs and item not in self._default_values:
                 if item not in self._optional_fields:
@@ -141,10 +176,15 @@ class BaseObjectModel(object):
             else:
                 value = self._default_values.get(item)
 
-            self._set_item(item, value)
+            self._set_attr(item, value)
 
-    def _set_item(self, key, value):
+    def _set_attr(self, key, value):
+        """ set value (aka __setattr__)
 
+        :param key: attr name
+        :param value: attr value
+        :return: None
+        """
         # if value is None
         if type(value) in self._fields_types[key] or (value is None and value in self._fields_types[key]):
             setattr(self, key, value)
@@ -183,16 +223,22 @@ class BaseObjectModel(object):
 
 
 class ObjectModelSlotsMetaclass(type):
+    """ Metaclass for validate user definition a slots-based models """
+
     def __new__(mcs, name, bases, cls_dict):
         return new_slots_class(mcs, name, bases, cls_dict)
 
 
 class ObjectModelDictMetaclass(type):
+    """ Metaclass for validate user definition a models """
+
     def __new__(mcs, name, bases, cls_dict):
         return new_dict_class(mcs, name, bases, cls_dict)
 
 
 class Field(object):
+    """ Class for store definition field """
+
     def __init__(self, types=None, optional=False, default_value=Undefined()):
         if types is not None:
             self.type_list = types
@@ -208,6 +254,8 @@ class Field(object):
 
 
 class PrettyObjectModelDictMetaclass(type):
+    """ Metaclass for validate user definition a pretty slots-based models """
+
     def __new__(mcs, name, bases, cls_dict):
         items = list()
 
@@ -247,6 +295,8 @@ class PrettyObjectModelDictMetaclass(type):
 
 
 class PrettyObjectModelSlotsMetaclass(type):
+    """ Metaclass for validate user definition a pretty models """
+
     def __new__(mcs, name, bases, cls_dict):
         items = list()
 

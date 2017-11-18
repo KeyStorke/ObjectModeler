@@ -1,8 +1,10 @@
-from object_modeler.common import ObjectModelSlotsMetaclass, BaseObjectModel, PrettyObjectModelSlotsMetaclass
 from six import with_metaclass
+
+from object_modeler.common import ObjectModelSlotsMetaclass, BaseObjectModel, PrettyObjectModelSlotsMetaclass
 
 
 class _PrototypeSlotsObjectModel(BaseObjectModel):
+    """ Define a representation slots-based models """
     __slots__ = tuple()
 
     def __repr__(self):
@@ -24,6 +26,7 @@ class _PrototypeSlotsObjectModel(BaseObjectModel):
 
 
 class GenericSlotsObjectModel(with_metaclass(ObjectModelSlotsMetaclass, _PrototypeSlotsObjectModel)):
+    """ Standard slots-based model """
     all_fields = tuple()
     optional_fields = tuple()
     default_values = dict()
@@ -31,6 +34,7 @@ class GenericSlotsObjectModel(with_metaclass(ObjectModelSlotsMetaclass, _Prototy
 
 
 class SlotsObjectModel(with_metaclass(PrettyObjectModelSlotsMetaclass, _PrototypeSlotsObjectModel)):
+    """ Pretty slots-based object model """
     __slots__ = tuple()
 
     def __init__(self, data):
