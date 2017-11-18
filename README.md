@@ -34,13 +34,13 @@ python setup.py test
 ```python
 import time
 
-from object_modeler import PrettySlotsObjectModel, Field
+from object_modeler import SlotsObjectModel, Field
 
 WRITER = 0
 READER = 1
 
 
-class GeneralUser(PrettySlotsObjectModel):
+class GeneralUser(SlotsObjectModel):
     uid = Field().types(str)
     name = Field(default_value='unnamed').types(str)
     status = Field(default_value=READER).types(int)
@@ -92,4 +92,4 @@ obj.username = 'other name'
 # AttributeError: 'ExternalUser' object has no attribute 'username'
 ```
 
-For disable integrity control in runtime - use `PrettyDictObjectModel`. 
+For disable integrity control in runtime - use `ObjectModel`. 
