@@ -6,6 +6,6 @@ python:
 install:
   - pip install .
 
-script: python setup.py test
-
-script: python benchmark.py
+script:
+  - python setup.py test
+  - python benchmark.py
