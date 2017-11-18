@@ -1,6 +1,3 @@
-import traceback as tb
-
-
 def convert_type(var_type, var):
     """ convert value to type
 
@@ -85,6 +82,7 @@ def checking_cls_dictionary(cls_dict):
     assert contain_all_elements(cls_dict.get('all_fields', tuple()), cls_dict.get('optional_fields', tuple()))
     assert contain_all_elements(cls_dict.get('all_fields', tuple()), cls_dict.get('default_values', dict()).keys())
 
+
 def prepare_new_class(cls_dict, name):
     try:
         checking_cls_dictionary(cls_dict)
@@ -100,6 +98,7 @@ def prepare_new_class(cls_dict, name):
     cls_dict.pop('optional_fields', None)
     cls_dict.pop('default_values', None)
     cls_dict.pop('fields_types', None)
+
 
 def new_slots_class(mcs, name, bases, cls_dict):
     prepare_new_class(cls_dict, name)
@@ -122,7 +121,7 @@ def new_dict_class(mcs, name, bases, cls_dict):
 class Undefined(object): pass
 
 
-class ObjectModel(object):
+class BaseObjectModel(object):
     __slots__ = tuple()
     _all_fields = tuple()
     _fields_types = dict()

@@ -1,8 +1,8 @@
-from object_modeler.common import ObjectModelSlotsMetaclass, ObjectModel, PrettyObjectModelSlotsMetaclass
+from object_modeler.common import ObjectModelSlotsMetaclass, BaseObjectModel, PrettyObjectModelSlotsMetaclass
 from six import with_metaclass
 
 
-class _PrototypeSlotsObjectModel(ObjectModel):
+class _PrototypeSlotsObjectModel(BaseObjectModel):
     __slots__ = tuple()
 
     def __repr__(self):
@@ -30,7 +30,7 @@ class GenericSlotsObjectModel(with_metaclass(ObjectModelSlotsMetaclass, _Prototy
     fields_types = dict()
 
 
-class PrettySlotsObjectModel(with_metaclass(PrettyObjectModelSlotsMetaclass, _PrototypeSlotsObjectModel)):
+class SlotsObjectModel(with_metaclass(PrettyObjectModelSlotsMetaclass, _PrototypeSlotsObjectModel)):
     __slots__ = tuple()
 
     def __init__(self, data):

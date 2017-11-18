@@ -1,8 +1,8 @@
 import unittest
 
 from object_modeler import Field
-from object_modeler import GenericDictObjectModel, PrettyDictObjectModel
-from object_modeler import GenericSlotsObjectModel,PrettySlotsObjectModel
+from object_modeler import GenericDictObjectModel, ObjectModel
+from object_modeler import GenericSlotsObjectModel,SlotsObjectModel
 
 test_dict = {
     'a': '1',
@@ -50,7 +50,7 @@ class B(GenericDictObjectModel):
         self.init_model(data)
 
 
-class C(PrettyDictObjectModel):
+class C(ObjectModel):
     a = Field(default_value=None).types(str)
     b = Field(optional=True).types(str)
     c = Field().types(str)
@@ -64,14 +64,14 @@ class SomeClass:
         return "all correct"
 
 
-class C2(PrettyDictObjectModel):
+class C2(ObjectModel):
     X = "all correct"
 
 
 class D(C, C2, SomeClass): pass
 
 
-class E(PrettySlotsObjectModel):
+class E(SlotsObjectModel):
     a = Field(types=(str,), default_value=None)
     b = Field(types=(str,), optional=True)
     c = Field(types=(str,))

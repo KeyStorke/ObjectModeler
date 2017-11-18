@@ -1,8 +1,8 @@
-from object_modeler.common import ObjectModelDictMetaclass, PrettyObjectModelDictMetaclass, ObjectModel
+from object_modeler.common import ObjectModelDictMetaclass, PrettyObjectModelDictMetaclass, BaseObjectModel
 from six import with_metaclass
 
 
-class _PrototypeDictObjectModel(ObjectModel):
+class _PrototypeDictObjectModel(BaseObjectModel):
     def __repr__(self):
         return str(self.to_dict())
 
@@ -20,7 +20,7 @@ class GenericDictObjectModel(with_metaclass(ObjectModelDictMetaclass, _Prototype
     fields_types = dict()
 
 
-class PrettyDictObjectModel(with_metaclass(PrettyObjectModelDictMetaclass, _PrototypeDictObjectModel)):
+class ObjectModel(with_metaclass(PrettyObjectModelDictMetaclass, _PrototypeDictObjectModel)):
 
     def __init__(self, data):
         self.init_model(data)

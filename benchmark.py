@@ -1,13 +1,13 @@
 from time import time
 
-from object_modeler import PrettySlotsObjectModel, PrettyDictObjectModel, Field
+from object_modeler import SlotsObjectModel, ObjectModel, Field
 
 
-class SomeClass(PrettySlotsObjectModel):
+class SomeClass(SlotsObjectModel):
     a = Field(types=(str,))
 
 
-class SomeClass2(PrettyDictObjectModel):
+class SomeClass2(ObjectModel):
     a = Field(types=(str,))
 
 
