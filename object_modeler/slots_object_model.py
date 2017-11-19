@@ -1,6 +1,5 @@
-from six import with_metaclass
-
-from object_modeler.common import ObjectModelSlotsMetaclass, BaseObjectModel, PrettyObjectModelSlotsMetaclass
+from object_modeler.common import ObjectModelSlotsMetaclass, BaseObjectModel, PrettyObjectModelSlotsMetaclass, \
+    with_metaclass
 
 
 class _PrototypeSlotsObjectModel(BaseObjectModel):

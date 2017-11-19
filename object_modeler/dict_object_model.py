@@ -1,6 +1,5 @@
-from six import with_metaclass
-
-from object_modeler.common import ObjectModelDictMetaclass, PrettyObjectModelDictMetaclass, BaseObjectModel
+from object_modeler.common import ObjectModelDictMetaclass, PrettyObjectModelDictMetaclass, BaseObjectModel, \
+    with_metaclass
 
 
 class _PrototypeDictObjectModel(BaseObjectModel):
