@@ -1,3 +1,11 @@
+import sys
+
+PY3 = sys.version_info >= (3, 0)
+
+if PY3:
+    unicode = str
+
+
 def convert_type(var_type, var):
     """ convert value to type
 
@@ -36,7 +44,7 @@ def is_empty_string(var):
     :param var:
     :return: check result
     """
-    return not var and isinstance(var, str)
+    return not var and isinstance(var, str) or isinstance(var, unicode)
 
 
 def compare_lists(lst, other_lst):
