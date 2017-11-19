@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    test_suite = 'test',
+    test_suite='test',
     name='object_modeler',
     version='0.0.10',
     packages=['object_modeler'],

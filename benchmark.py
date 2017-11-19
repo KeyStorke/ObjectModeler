@@ -12,18 +12,25 @@ class SomeClass2(ObjectModel):
 
 
 class SomeClass3:
+    fields = ['a']
+
     def __init__(self, some_dict):
-        for i in some_dict:
-            setattr(self, i, some_dict[i])
+        for item in self.fields:
+            if item in some_dict:
+                setattr(self, item, some_dict[item])
+            else:
+                raise ValueError
 
 
 class SomeClass4:
     __slots__ = ('a',)
 
     def __init__(self, some_dict):
-        for i in some_dict:
-            if i in self.__slots__:
-                setattr(self, i, some_dict[i])
+        for item in self.__slots__:
+            if item in some_dict:
+                setattr(self, item, some_dict[item])
+            else:
+                raise ValueError
 
 
 def benchmark_it(cls, name):
