@@ -16,7 +16,13 @@ class _PrototypeDictObjectModel(BaseObjectModel):
 
 
 class GenericDictObjectModel(with_metaclass(ObjectModelDictMetaclass, _PrototypeDictObjectModel)):
-    """ Standard model """
+    """ Standard model
+
+    all_fields - tuple of all fields names
+    optional_fields - tuple of optional (not required fields names)
+    default_values - dict of default values for fields (if value not received in init)
+    fields_types - dict of all fields types
+    """
     all_fields = tuple()
     optional_fields = tuple()
     default_values = dict()
