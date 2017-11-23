@@ -20,7 +20,7 @@ class _PrototypeSlotsObjectModel(BaseObjectModel):
             elif item in self._optional_fields:
                 continue
             else:
-                raise AttributeError('{} object has no attribute {}'.format(self.__name__, item))
+                raise AttributeError('{} object has no attribute {}'.format(self.__name__(), item))
         return result
 
 

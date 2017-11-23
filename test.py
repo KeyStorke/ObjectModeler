@@ -114,6 +114,11 @@ class TestGenericSlotsObjectModel(unittest.TestCase):
     def test_name(self):
         self.assertEqual(self.a.__name__(), 'A')
 
+    def test_delete_item(self):
+        delattr(self.a, 'a')
+        with self.assertRaises(AttributeError):
+            self.a.to_dict()
+
 
 class TestGenericDictObjectModel(unittest.TestCase):
     def setUp(self):
@@ -189,6 +194,11 @@ class TestPrettySlotsObjectModel(unittest.TestCase):
     def test_name(self):
         self.assertEqual(self.a.__name__(), 'E')
 
+    def test_delete_item(self):
+        delattr(self.a, 'a')
+        with self.assertRaises(AttributeError):
+            self.a.to_dict()
+
 
 class TestInheritancePrettySlotsObjectModel(unittest.TestCase):
     def setUp(self):
@@ -222,6 +232,11 @@ class TestInheritancePrettySlotsObjectModel(unittest.TestCase):
     def test_inherited_method(self):
         self.assertEqual(self.a.test(), 21)
         self.assertEqual(self.a.static_test(), 31)
+
+    def test_delete_item(self):
+        delattr(self.a, 'a')
+        with self.assertRaises(AttributeError):
+            self.a.to_dict()
 
 
 class TestInheritancePrettyDictObjectModel(unittest.TestCase):
