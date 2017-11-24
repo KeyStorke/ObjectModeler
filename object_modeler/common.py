@@ -2,9 +2,6 @@ import sys
 
 PY3 = sys.version_info >= (3, 0)
 
-if PY3:
-    unicode = str
-
 
 def convert_type(var_type, var):
     """ convert value to type
@@ -38,13 +35,22 @@ def contain_none(lst):
     return None in lst
 
 
-def is_empty_string(var):
-    """ check for empty string
+def is_empty_string_py2(var):
+    """ check for empty string in python2
 
     :param var:
     :return: check result
     """
     return not var and isinstance(var, str) or isinstance(var, unicode)
+
+
+def is_empty_string_py3(var):
+    """ check for empty string in python3
+
+    :param var:
+    :return: check result
+    """
+    return not var and isinstance(var, str)
 
 
 def compare_lists(lst, other_lst):
@@ -379,3 +385,8 @@ def with_metaclass(meta, *bases):
             return meta.__prepare__(name, bases)
 
     return type.__new__(metaclass, 'temporary_class', (), {})
+
+if PY3:
+    is_empty_string = is_empty_string_py3
+else:
+    is_empty_string = is_empty_string_py2
