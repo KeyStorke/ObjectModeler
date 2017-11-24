@@ -53,6 +53,20 @@ def _is_empty_string_py3(var):
     return not var and isinstance(var, str)
 
 
+def check_types_list(lst):
+    """ check for non callable types
+
+    :param lst: list of types
+    :return: check result
+    """
+    for vartypes in lst:
+        for item in vartypes:
+            if not callable(item) and item is not None:
+                print(item)
+                return False
+    return True
+
+
 def compare_lists(lst, other_lst):
     """ compare two lists
 
@@ -99,6 +113,7 @@ def checking_cls_dictionary(cls_dict):
 
     # check for empty types
     assert check_for_empty_values(cls_dict.get('fields_types', dict()))
+    assert check_types_list(cls_dict.get('fields_types', dict()).values())
 
     # all fields must be defined in all_fields
     assert contain_all_elements(cls_dict.get('all_fields', tuple()), cls_dict.get('optional_fields', tuple()))
@@ -186,9 +201,9 @@ class BaseObjectModel(object):
                     continue
 
             if item in kwargs:
-                value = kwargs.get(item)
+                value = kwargs[item]
             else:
-                value = self._default_values.get(item)
+                value = self._default_values[item]
 
             self._set_attr(item, value)
 
@@ -208,24 +223,22 @@ class BaseObjectModel(object):
 
         if is_empty_string(value):
 
-            if contain_none(var_types):
-                setattr(self, key, None)
-                return
-
             if contain_str_type(var_types):
                 setattr(self, key, "")
+                return
+            if contain_none(var_types):
+                setattr(self, key, None)
                 return
 
         err = None
 
         for var_type in var_types:
 
-            if callable(var_type):
-                value, err = convert_type(var_type, value)
+            value, err = convert_type(var_type, value)
 
-                if not err:
-                    setattr(self, key, value)
-                    return
+            if not err:
+                setattr(self, key, value)
+                return
 
         types = [str(vtype) for vtype in var_types]
         types = ' or '.join(types)

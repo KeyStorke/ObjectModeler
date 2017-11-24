@@ -4,15 +4,19 @@ from object_modeler import SlotsObjectModel, ObjectModel, Field
 
 
 class SomeClass(SlotsObjectModel):
-    a = Field(types=(str,))
+    a = Field().types(str)
+    b = Field().types(int)
+    c = Field().types(bool)
 
 
 class SomeClass2(ObjectModel):
-    a = Field(types=(str,))
+    a = Field().types(str)
+    b = Field().types(int)
+    c = Field().types(bool)
 
 
 class SomeClass3:
-    fields = ['a']
+    fields = ('a', 'b', 'c')
 
     def __init__(self, some_dict):
         for item in self.fields:
@@ -23,7 +27,7 @@ class SomeClass3:
 
 
 class SomeClass4:
-    __slots__ = ('a',)
+    __slots__ = ('a', 'b', 'c')
 
     def __init__(self, some_dict):
         for item in self.__slots__:
@@ -34,7 +38,7 @@ class SomeClass4:
 
 
 def benchmark_it(cls, name):
-    some_dict = {'a': '1'}
+    some_dict = {'a': '1', 'b': 10, 'c': False}
     N = 10 ** 6
     all_time = 0
 
@@ -48,6 +52,7 @@ def benchmark_it(cls, name):
     print('     Average create object {} micro sec'.format((all_time / N) / 10 ** -6))
     print('     Sum {} sec'.format(all_time))
     print('')
+
 
 benchmark_it(SomeClass, 'PrettySlotsObjectModel')
 benchmark_it(SomeClass2, 'PrettyDictObjectModel')
