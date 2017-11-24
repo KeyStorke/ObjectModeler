@@ -41,7 +41,7 @@ def _is_empty_string_py2(var):
     :param var:
     :return: check result
     """
-    return not var and isinstance(var, str) or isinstance(var, unicode)
+    return not var and (isinstance(var, str) or isinstance(var, unicode))
 
 
 def _is_empty_string_py3(var):
@@ -385,6 +385,7 @@ def with_metaclass(meta, *bases):
             return meta.__prepare__(name, bases)
 
     return type.__new__(metaclass, 'temporary_class', (), {})
+
 
 if PY3:
     is_empty_string = _is_empty_string_py3
