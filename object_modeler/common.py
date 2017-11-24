@@ -35,7 +35,7 @@ def contain_none(lst):
     return None in lst
 
 
-def is_empty_string_py2(var):
+def _is_empty_string_py2(var):
     """ check for empty string in python2
 
     :param var:
@@ -44,7 +44,7 @@ def is_empty_string_py2(var):
     return not var and isinstance(var, str) or isinstance(var, unicode)
 
 
-def is_empty_string_py3(var):
+def _is_empty_string_py3(var):
     """ check for empty string in python3
 
     :param var:
@@ -387,6 +387,6 @@ def with_metaclass(meta, *bases):
     return type.__new__(metaclass, 'temporary_class', (), {})
 
 if PY3:
-    is_empty_string = is_empty_string_py3
+    is_empty_string = _is_empty_string_py3
 else:
-    is_empty_string = is_empty_string_py2
+    is_empty_string = _is_empty_string_py2
