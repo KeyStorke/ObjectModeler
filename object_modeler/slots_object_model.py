@@ -6,8 +6,8 @@ class _PrototypeSlotsObjectModel(BaseObjectModel):
     """ Define a representation slots-based models """
     __slots__ = tuple()
 
-    def __repr__(self):
-        return str(self.to_dict())
+    # def __repr__(self):
+    #     return str(self.to_dict())
 
     def __name__(self):
         return type(self).__name__

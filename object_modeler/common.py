@@ -99,7 +99,7 @@ def check_for_empty_values(dictionary):
     return all(dictionary.values())
 
 
-def checking_cls_dictionary(cls_dict):
+def check_cls_dictionary(cls_dict):
     """ validate cls dictionary (cls.__dict__) for Model
 
     :param cls_dict: dict for checking
@@ -126,10 +126,7 @@ def prepare_new_class(cls_dict, name):
     :param cls_dict: class for preparing
     :param name: class name
     """
-    try:
-        checking_cls_dictionary(cls_dict)
-    except Exception as e:
-        raise Exception('{} in class {}'.format(e, name))
+    check_cls_dictionary(cls_dict)
 
     cls_dict['_all_fields'] = cls_dict.get('all_fields', tuple())
     cls_dict['_optional_fields'] = cls_dict.get('optional_fields', tuple())
