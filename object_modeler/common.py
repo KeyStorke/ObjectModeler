@@ -41,7 +41,7 @@ def _is_empty_string_py2(var):
     :param var:
     :return: check result
     """
-    return not var and (isinstance(var, str) or isinstance(var, unicode))
+    return (isinstance(var, str) or isinstance(var, unicode)) and not var
 
 
 def _is_empty_string_py3(var):
