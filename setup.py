@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     test_suite='test',
     name='object_modeler',
-    version='0.0.11',
+    version='0.0.12',
     packages=['object_modeler'],
     url='https://github.com/KeyStorke/ObjectModeler',
     license='MIT',
