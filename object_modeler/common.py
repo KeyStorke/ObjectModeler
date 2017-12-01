@@ -50,7 +50,7 @@ def _is_empty_string_py3(var):
     :param var:
     :return: check result
     """
-    return not var and isinstance(var, str)
+    return isinstance(var, str) and not var
 
 
 def check_types_list(lst):
