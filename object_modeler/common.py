@@ -2,6 +2,9 @@ import sys
 
 PY3 = sys.version_info >= (3, 0)
 
+if PY3:
+    unicode = str
+
 
 def convert_type(var_type, var):
     """ convert value to type
@@ -23,7 +26,7 @@ def contain_str_type(lst):
     :param lst: list for checking
     :return: check result
     """
-    return str in lst
+    return str in lst or unicode in lst
 
 
 def contain_none(lst):
@@ -62,7 +65,6 @@ def check_types_list(lst):
     for vartypes in lst:
         for item in vartypes:
             if not callable(item) and item is not None:
-                print(item)
                 return False
     return True
 
@@ -74,7 +76,7 @@ def compare_lists(lst, other_lst):
     :param other_lst: list for compare
     :return: result compare
     """
-    return sorted(lst) == sorted(other_lst)
+    return frozenset(lst) == frozenset(other_lst)
 
 
 def contain_all_elements(lst, other_lst):
@@ -84,10 +86,11 @@ def contain_all_elements(lst, other_lst):
     :param other_lst: second list
     :return: check result
     """
-    for i in other_lst:
-        if i not in lst:
-            return False
-    return True
+
+    diff = set(other_lst)
+    diff -= frozenset(lst)
+
+    return not len(diff)
 
 
 def check_for_empty_values(dictionary):
@@ -116,8 +119,11 @@ def check_cls_dictionary(cls_dict):
     assert check_types_list(cls_dict.get('fields_types', dict()).values())
 
     # all fields must be defined in all_fields
-    assert contain_all_elements(cls_dict.get('all_fields', tuple()), cls_dict.get('optional_fields', tuple()))
-    assert contain_all_elements(cls_dict.get('all_fields', tuple()), cls_dict.get('default_values', dict()).keys())
+    assert contain_all_elements(cls_dict.get('all_fields', tuple()),
+                                cls_dict.get('optional_fields', tuple()))
+
+    assert contain_all_elements(cls_dict.get('all_fields', tuple()),
+                                cls_dict.get('default_values', dict()).keys())
 
 
 def prepare_new_class(cls_dict, name):
@@ -240,9 +246,15 @@ class BaseObjectModel(object):
         types = [str(vtype) for vtype in var_types]
         types = ' or '.join(types)
         raise TypeError(
-            '`{}` must be type {}, got {} (`{}`) \n last err: {}\n types: {}'.format(key, types, type(value).__name__,
-                                                                                     value,
-                                                                                     err, var_types)
+            '`{key}` must be type {required_types}, \
+            got {current_type_name} (`{value}`) \n last err: {error}\n types: {current_types}'.format(
+                key=key,
+                required_types=types,
+                current_type_name=type(value).__name__,
+                value=value,
+                error=err,
+                current_types=var_types
+            )
         )
 
 
