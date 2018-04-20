@@ -2,7 +2,7 @@ import unittest
 
 from object_modeler import Field
 from object_modeler import GenericDictObjectModel, ObjectModel
-from object_modeler import GenericSlotsObjectModel,SlotsObjectModel
+from object_modeler import GenericSlotsObjectModel, SlotsObjectModel, SlotsObjectModelKwargs
 
 test_dict = {
     'a': '1',
@@ -88,6 +88,14 @@ class E2(E):
     @staticmethod
     def static_test():
         return 31
+
+
+class E3(SlotsObjectModelKwargs):
+    a = Field(types=(str,), default_value=None)
+    b = Field(types=(str,), optional=True)
+    c = Field(types=(str,))
+    d = Field(types=(None,))
+    e = Field(optional=True).types(int)
 
 
 class TestGenericSlotsObjectModel(unittest.TestCase):
@@ -268,3 +276,33 @@ class TestInheritancePrettyDictObjectModel(unittest.TestCase):
 
     def test_inherited_attribute(self):
         self.assertEqual(self.a.X, "all correct")
+
+
+class TestPrettySlotsObjectModelKwargs(unittest.TestCase):
+    def setUp(self):
+        self.a = E3(**test_dict)
+
+    def test_constructor(self):
+        self.assertEqual(self.a.a, '1')
+        self.assertEqual(self.a.b, 'q')
+        self.assertEqual(self.a.c, 'None')
+        self.assertEqual(self.a.d, None)
+
+    def test_mutable(self):
+        with self.assertRaises(AttributeError):
+            self.a.x = 1
+
+    def test_overhead_data_in_constructor(self):
+        with self.assertRaises(AttributeError):
+            return self.a.O
+
+    def test_to_dict(self):
+        self.assertDictEqual(correct_dict, self.a.to_dict())
+
+    def test_name(self):
+        self.assertEqual(self.a.__name__(), 'E3')
+
+    def test_delete_item(self):
+        delattr(self.a, 'a')
+        with self.assertRaises(AttributeError):
+            self.a.to_dict()

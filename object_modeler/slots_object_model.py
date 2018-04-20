@@ -44,3 +44,11 @@ class SlotsObjectModel(with_metaclass(PrettyObjectModelSlotsMetaclass, _Prototyp
 
     def __init__(self, data):
         self.init_model(data)
+
+
+class SlotsObjectModelKwargs(with_metaclass(PrettyObjectModelSlotsMetaclass, _PrototypeSlotsObjectModel)):
+    """ Pretty slots-based object model with keyword args in constructor"""
+    __slots__ = tuple()
+
+    def __init__(self, **data):
+        self.init_model(data)
