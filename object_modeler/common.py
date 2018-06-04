@@ -227,7 +227,7 @@ class BaseObjectModel(object):
         if is_empty_string(value):
 
             if contain_str_type(var_types):
-                setattr(self, key, "")
+                setattr(self, key, str())
                 return
             if contain_none(var_types):
                 setattr(self, key, None)
@@ -239,9 +239,11 @@ class BaseObjectModel(object):
 
             value, err = convert_type(var_type, value)
 
-            if not err:
-                setattr(self, key, value)
-                return
+            if err:
+                continue
+
+            setattr(self, key, value)
+            return
 
         types = [str(vtype) for vtype in var_types]
         types = ' or '.join(types)
