@@ -11,8 +11,10 @@ class _PrototypeDictObjectModel(BaseObjectModel):
     def __name__(self):
         return type(self).__name__
 
-    def to_dict(self):
-        return self.__dict__
+    def to_dict(self, excluded_fields=None):
+        if excluded_fields is None:
+            return self.__dict__
+        return {k: self.__dict__[k] for k in self.__dict__ if k not in excluded_fields}
 
 
 class GenericDictObjectModel(with_metaclass(ObjectModelDictMetaclass, _PrototypeDictObjectModel)):

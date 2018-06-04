@@ -12,9 +12,11 @@ class _PrototypeSlotsObjectModel(BaseObjectModel):
     def __name__(self):
         return type(self).__name__
 
-    def to_dict(self):
+    def to_dict(self, excluded_fields=None):
+        fields = self._all_fields if excluded_fields is None else set(self._all_fields) - set(excluded_fields)
+
         result = dict()
-        for item in self._all_fields:
+        for item in fields:
             if hasattr(self, item):
                 result[item] = getattr(self, item)
             elif item in self._optional_fields:

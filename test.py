@@ -19,6 +19,12 @@ correct_dict = {
     'd': None
 }
 
+correct_dict_excluded_c = {
+    'a': '1',
+    'b': 'q',
+    'd': None
+}
+
 
 class A(GenericSlotsObjectModel):
     all_fields = ('a', 'b', 'c', 'd')
@@ -119,6 +125,9 @@ class TestGenericSlotsObjectModel(unittest.TestCase):
     def test_to_dict(self):
         self.assertDictEqual(correct_dict, self.a.to_dict())
 
+    def test_exclude_to_dict(self):
+        self.assertDictEqual(correct_dict_excluded_c, self.a.to_dict(excluded_fields=['c']))
+
     def test_name(self):
         self.assertEqual(self.a.__name__(), 'A')
 
@@ -149,6 +158,9 @@ class TestGenericDictObjectModel(unittest.TestCase):
     def test_to_dict(self):
         self.assertDictEqual(correct_dict, self.a.to_dict())
 
+    def test_exclude_to_dict(self):
+        self.assertDictEqual(correct_dict_excluded_c, self.a.to_dict(excluded_fields=['c']))
+
     def test_name(self):
         self.assertEqual(self.a.__name__(), 'B')
 
@@ -174,6 +186,9 @@ class TestPrettyDictObjectModel(unittest.TestCase):
     def test_to_dict(self):
         self.assertDictEqual(correct_dict, self.a.to_dict())
 
+    def test_exclude_to_dict(self):
+        self.assertDictEqual(correct_dict_excluded_c, self.a.to_dict(excluded_fields=['c']))
+
     def test_name(self):
         self.assertEqual(self.a.__name__(), 'C')
 
@@ -198,6 +213,9 @@ class TestPrettySlotsObjectModel(unittest.TestCase):
 
     def test_to_dict(self):
         self.assertDictEqual(correct_dict, self.a.to_dict())
+
+    def test_exclude_to_dict(self):
+        self.assertDictEqual(correct_dict_excluded_c, self.a.to_dict(excluded_fields=['c']))
 
     def test_name(self):
         self.assertEqual(self.a.__name__(), 'E')
