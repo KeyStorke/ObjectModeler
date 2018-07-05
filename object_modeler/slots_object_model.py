@@ -17,12 +17,18 @@ class _PrototypeSlotsObjectModel(BaseObjectModel):
 
         result = dict()
         for item in fields:
-            if hasattr(self, item):
+            if hasattr(self, item) and item not in self._hidden_fields:
                 result[item] = getattr(self, item)
             elif item in self._optional_fields:
                 continue
             else:
                 raise AttributeError('{} object has no attribute {}'.format(self.__name__(), item))
+
+        must_be_serialized = ((key, self._serializers[key]) for key in result if key in self._serializers)
+
+        for key, serializer in must_be_serialized:
+            result[key] = serializer(result[key])
+
         return result
 
 

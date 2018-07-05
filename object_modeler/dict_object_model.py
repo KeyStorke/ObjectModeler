@@ -12,9 +12,18 @@ class _PrototypeDictObjectModel(BaseObjectModel):
         return type(self).__name__
 
     def to_dict(self, excluded_fields=None):
+
         if excluded_fields is None:
-            return {k: self.__dict__[k] for k in self.__dict__ if k not in self._hidden_fields}
-        return {k: self.__dict__[k] for k in self.__dict__ if k not in excluded_fields and k not in self._hidden_fields}
+            result = {k: self.__dict__[k] for k in self.__dict__ if k not in self._hidden_fields}
+        else:
+            result = {k: self.__dict__[k] for k in self.__dict__ if k not in excluded_fields and k not in self._hidden_fields}
+
+        must_be_serialized = ((key, self._serializers[key]) for key in result if key in self._serializers)
+
+        for key, serializer in must_be_serialized:
+            result[key] = serializer(result[key])
+
+        return result
 
 
 class GenericDictObjectModel(with_metaclass(ObjectModelDictMetaclass, _PrototypeDictObjectModel)):

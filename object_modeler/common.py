@@ -138,6 +138,7 @@ def prepare_new_class(cls_dict, name):
     cls_dict['_optional_fields'] = cls_dict.get('optional_fields', tuple())
     cls_dict['_default_values'] = cls_dict.get('default_values', dict())
     cls_dict['_fields_types'] = cls_dict.get('fields_types', dict())
+    cls_dict['_serializers'] = cls_dict.get('serializers', dict())
     cls_dict['_hidden_fields'] = cls_dict.get('hidden_fields', tuple())
 
     cls_dict.pop('all_fields', None)
@@ -193,6 +194,7 @@ class BaseObjectModel(object):
     _default_values = dict()
     _optional_fields = dict()
     _hidden_fields = tuple()
+    _serializers = dict()
 
     def init_model(self, kwargs):
         """ initialization all fields
@@ -280,7 +282,7 @@ class ObjectModelDictMetaclass(type):
 class Field(object):
     """ Class for store definition field """
 
-    def __init__(self, types=None, optional=False, default_value=Undefined(), hidden=False, serializer=None):
+    def __init__(self, types=None, optional=False, default_value=Undefined(), hidden=False, serializer=Undefined()):
         if types is not None:
             self.type_list = types
         else:
@@ -307,6 +309,7 @@ class PrettyObjectModelDictMetaclass(type):
         optional_fields = list()
         default_values = dict()
         fields_types = dict()
+        serializers = dict()
 
         for base_class in bases:
             if hasattr(base_class, '_all_fields'):
@@ -315,6 +318,7 @@ class PrettyObjectModelDictMetaclass(type):
                 hidden_fields += getattr(base_class, '_hidden_fields')
                 fields_types.update(getattr(base_class, '_fields_types'))
                 default_values.update(getattr(base_class, '_default_values'))
+                serializers.update(getattr(base_class, '_serializers'))
 
         for field_name, value in cls_dict.items():
 
@@ -330,6 +334,9 @@ class PrettyObjectModelDictMetaclass(type):
             if field.hidden:
                 hidden_fields.append(field_name)
 
+            if not isinstance(field.serializer, Undefined):
+                serializers[field_name] = field.serializer
+
             if not isinstance(field.default_value, Undefined):
                 default_values[field_name] = field.default_value
 
@@ -340,6 +347,7 @@ class PrettyObjectModelDictMetaclass(type):
         cls_dict['hidden_fields'] = tuple(set(hidden_fields))
         cls_dict['default_values'] = default_values
         cls_dict['fields_types'] = fields_types
+        cls_dict['serializers'] = serializers
 
         return new_dict_class(mcs, name, bases, cls_dict)
 
@@ -355,6 +363,7 @@ class PrettyObjectModelSlotsMetaclass(type):
         hidden_fields = list()
         default_values = dict()
         fields_types = dict()
+        serializers = dict()
 
         for base_class in bases:
             if hasattr(base_class, '_all_fields'):
@@ -363,6 +372,7 @@ class PrettyObjectModelSlotsMetaclass(type):
                 hidden_fields += getattr(base_class, '_hidden_fields')
                 fields_types.update(getattr(base_class, '_fields_types'))
                 default_values.update(getattr(base_class, '_default_values'))
+                serializers.update(getattr(base_class, '_serializers'))
 
         for field_name, value in cls_dict.items():
 
@@ -387,6 +397,7 @@ class PrettyObjectModelSlotsMetaclass(type):
         cls_dict['hidden_fields'] = tuple(set(hidden_fields))
         cls_dict['default_values'] = default_values
         cls_dict['fields_types'] = fields_types
+        cls_dict['serializers'] = serializers
 
         return new_slots_class(mcs, name, bases, cls_dict)
 

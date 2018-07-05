@@ -57,12 +57,12 @@ class B(GenericDictObjectModel):
 
 
 class C(ObjectModel):
-    a = Field(default_value=None).types(str)
+    a = Field(default_value=None, serializer=str).types(str)
     b = Field(optional=True).types(str)
     c = Field().types(str)
     d = Field().types(None)
     e = Field(optional=True).types(int)
-    sldkjflskdjflksdjflksjdlkf = Field(default_value=True, hidden=True).types(str)
+    x = Field(default_value=True, hidden=True).types(str)
 
 
 class SomeClass:
