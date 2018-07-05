@@ -13,8 +13,8 @@ class _PrototypeDictObjectModel(BaseObjectModel):
 
     def to_dict(self, excluded_fields=None):
         if excluded_fields is None:
-            return self.__dict__
-        return {k: self.__dict__[k] for k in self.__dict__ if k not in excluded_fields}
+            return {k: self.__dict__[k] for k in self.__dict__ if k not in self._hidden_fields}
+        return {k: self.__dict__[k] for k in self.__dict__ if k not in excluded_fields and k not in self._hidden_fields}
 
 
 class GenericDictObjectModel(with_metaclass(ObjectModelDictMetaclass, _PrototypeDictObjectModel)):
@@ -29,6 +29,7 @@ class GenericDictObjectModel(with_metaclass(ObjectModelDictMetaclass, _Prototype
     optional_fields = tuple()
     default_values = dict()
     fields_types = dict()
+    hidden_fields = tuple()
 
 
 class ObjectModel(with_metaclass(PrettyObjectModelDictMetaclass, _PrototypeDictObjectModel)):

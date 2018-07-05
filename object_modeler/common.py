@@ -138,11 +138,13 @@ def prepare_new_class(cls_dict, name):
     cls_dict['_optional_fields'] = cls_dict.get('optional_fields', tuple())
     cls_dict['_default_values'] = cls_dict.get('default_values', dict())
     cls_dict['_fields_types'] = cls_dict.get('fields_types', dict())
+    cls_dict['_hidden_fields'] = cls_dict.get('hidden_fields', tuple())
 
     cls_dict.pop('all_fields', None)
     cls_dict.pop('optional_fields', None)
     cls_dict.pop('default_values', None)
     cls_dict.pop('fields_types', None)
+    cls_dict.pop('hidden_fields', None)
 
 
 def new_slots_class(mcs, name, bases, cls_dict):
@@ -190,6 +192,7 @@ class BaseObjectModel(object):
     _fields_types = dict()
     _default_values = dict()
     _optional_fields = dict()
+    _hidden_fields = tuple()
 
     def init_model(self, kwargs):
         """ initialization all fields
@@ -277,7 +280,7 @@ class ObjectModelDictMetaclass(type):
 class Field(object):
     """ Class for store definition field """
 
-    def __init__(self, types=None, optional=False, default_value=Undefined()):
+    def __init__(self, types=None, optional=False, default_value=Undefined(), hidden=False, serializer=None):
         if types is not None:
             self.type_list = types
         else:
@@ -285,6 +288,8 @@ class Field(object):
 
         self.optional = optional
         self.default_value = default_value
+        self.hidden = hidden
+        self.serializer = serializer
 
     def types(self, *args):
         self.type_list += args
@@ -298,6 +303,7 @@ class PrettyObjectModelDictMetaclass(type):
         items = list()
 
         all_fields = list()
+        hidden_fields = list()
         optional_fields = list()
         default_values = dict()
         fields_types = dict()
@@ -306,6 +312,7 @@ class PrettyObjectModelDictMetaclass(type):
             if hasattr(base_class, '_all_fields'):
                 all_fields += getattr(base_class, '_all_fields')
                 optional_fields += getattr(base_class, '_optional_fields')
+                hidden_fields += getattr(base_class, '_hidden_fields')
                 fields_types.update(getattr(base_class, '_fields_types'))
                 default_values.update(getattr(base_class, '_default_values'))
 
@@ -316,8 +323,12 @@ class PrettyObjectModelDictMetaclass(type):
 
         for field_name, field in items:
             all_fields.append(field_name)
+
             if field.optional:
                 optional_fields.append(field_name)
+
+            if field.hidden:
+                hidden_fields.append(field_name)
 
             if not isinstance(field.default_value, Undefined):
                 default_values[field_name] = field.default_value
@@ -326,6 +337,7 @@ class PrettyObjectModelDictMetaclass(type):
 
         cls_dict['all_fields'] = tuple(set(all_fields))
         cls_dict['optional_fields'] = tuple(set(optional_fields))
+        cls_dict['hidden_fields'] = tuple(set(hidden_fields))
         cls_dict['default_values'] = default_values
         cls_dict['fields_types'] = fields_types
 
@@ -340,6 +352,7 @@ class PrettyObjectModelSlotsMetaclass(type):
 
         all_fields = list()
         optional_fields = list()
+        hidden_fields = list()
         default_values = dict()
         fields_types = dict()
 
@@ -347,6 +360,7 @@ class PrettyObjectModelSlotsMetaclass(type):
             if hasattr(base_class, '_all_fields'):
                 all_fields += getattr(base_class, '_all_fields')
                 optional_fields += getattr(base_class, '_optional_fields')
+                hidden_fields += getattr(base_class, '_hidden_fields')
                 fields_types.update(getattr(base_class, '_fields_types'))
                 default_values.update(getattr(base_class, '_default_values'))
 
@@ -359,6 +373,8 @@ class PrettyObjectModelSlotsMetaclass(type):
             all_fields.append(field_name)
             if field.optional:
                 optional_fields.append(field_name)
+            if field.hidden:
+                hidden_fields.append(field_name)
 
             if not isinstance(field.default_value, Undefined):
                 default_values[field_name] = field.default_value
@@ -368,6 +384,7 @@ class PrettyObjectModelSlotsMetaclass(type):
         cls_dict['__slots__'] = tuple(set(all_fields))
         cls_dict['all_fields'] = tuple(set(all_fields))
         cls_dict['optional_fields'] = tuple(set(optional_fields))
+        cls_dict['hidden_fields'] = tuple(set(hidden_fields))
         cls_dict['default_values'] = default_values
         cls_dict['fields_types'] = fields_types
 

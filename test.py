@@ -62,6 +62,7 @@ class C(ObjectModel):
     c = Field().types(str)
     d = Field().types(None)
     e = Field(optional=True).types(int)
+    sldkjflskdjflksdjflksjdlkf = Field(default_value=True, hidden=True).types(str)
 
 
 class SomeClass:
