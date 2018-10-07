@@ -1,0 +1,35 @@
+model_name: Y
+
+fields:
+  a: required
+  b: optional
+  c: required
+  d: required
+  e: optional
+  x: required
+
+definition:
+  a:
+    type:
+      - string
+      - unicode
+    default_value: null
+    serializer: string
+
+  b:
+    type: string
+
+  c:
+    type: string
+
+  d:
+    type: null
+
+  e:
+    type: integer
+
+  x:
+    type: string
+    default_value: true
+    hidden: true
+

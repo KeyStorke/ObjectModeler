@@ -19,7 +19,8 @@ class _PrototypeSlotsObjectModel(BaseObjectModel):
         for item in fields:
             if item in self._hidden_fields:
                 continue
-            elif hasattr(self, item):
+                
+            if hasattr(self, item):
                 result[item] = getattr(self, item)
             elif item in self._optional_fields:
                 continue
