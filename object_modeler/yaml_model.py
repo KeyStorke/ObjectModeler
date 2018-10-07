@@ -24,7 +24,8 @@ def load_model(yaml_file):
 
     all_fields_names = tuple(field_name for field_name in data['fields'])
     optional_fields_names = tuple(field_name for field_name, value in data['fields'].items() if 'optional' in value)
-    field_types_as_strings = {field_name: data['definition'][field_name]['type'] for field_name in all_fields_names}
+    field_types_as_strings = {field_name: data['definition'][field_name]['type'] for field_name in all_fields_names if data['definition'][field_name]['type'] is not None}
+    field_types_as_strings.update({field_name: 'null' for field_name in all_fields_names if data['definition'][field_name]['type'] is None})
     field_types = dict()
 
     # load defined classes, getting default values and import serializers
