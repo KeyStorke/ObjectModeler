@@ -1,39 +1,35 @@
-model_name: User
+model_name: Y
 
 fields:
-  id: required
-  _id: required
-  name: optional
-  nickname: optional
+  a: required
+  b: optional
+  c: required
+  d: required
+  e: optional
+  x: required
 
 definition:
-  name:
+  a:
     type:
       - string
       - unicode
-    default_value: UNDEFINED
+    default_value: null
+    serializer: string
 
-  nickname:
+  b:
     type: string
-    default_value: "noname"
 
-  id:
+  c:
+    type: string
+
+  d:
+    type: null
+
+  e:
     type: integer
 
-  _id:
-    type: ObjectId
+  x:
+    type: string
+    default_value: true
     hidden: true
-    serializer: object_id_serializer
 
-serialisers_definitions:
-  object_id_serializer: mongo_utils
-
-types_definitions:
-  ObjectId: mongo_utils
-
-values_definitions:
-  UNDEFINED: utils
-
-parents:
-  BaseUser: bases
-  BaseDBObject: bases
