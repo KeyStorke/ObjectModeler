@@ -29,17 +29,20 @@ def load_model(yaml_file):
 
     # load defined classes, getting default values and import serializers
 
-    for type_name in data['types_definitions']:
-        module = importlib.import_module(data['types_definitions'][type_name])
-        TYPES[type_name] = getattr(module, type_name)
+    if 'types_definitions' in data:
+        for type_name in data['types_definitions']:
+            module = importlib.import_module(data['types_definitions'][type_name])
+            TYPES[type_name] = getattr(module, type_name)
 
-    for serializer_name in data['serialisers_definitions']:
-        module = importlib.import_module(data['serialisers_definitions'][serializer_name])
-        SERIALIZERS[serializer_name] = getattr(module, serializer_name)
+    if 'serialisers_definitions' in data:
+        for serializer_name in data['serialisers_definitions']:
+            module = importlib.import_module(data['serialisers_definitions'][serializer_name])
+            SERIALIZERS[serializer_name] = getattr(module, serializer_name)
 
-    for value_name in data['values_definitions']:
-        module = importlib.import_module(data['values_definitions'][value_name])
-        VALUES[value_name] = getattr(module, value_name)
+    if 'values_definitions' in data:
+        for value_name in data['values_definitions']:
+            module = importlib.import_module(data['values_definitions'][value_name])
+            VALUES[value_name] = getattr(module, value_name)
 
     default_values = dict()
     hidden_fields = dict()
