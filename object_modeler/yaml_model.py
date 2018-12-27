@@ -3,7 +3,6 @@ from object_modeler import SlotsObjectModel
 from object_modeler.common import Undefined, Field
 import importlib
 
-
 TYPES = {
     'dictionary': dict,
     'string': str,
@@ -16,16 +15,18 @@ TYPES = {
 
 
 def load_model(yaml_file):
-    SERIALIZERS = dict()
-    VALUES = dict()
+    serializers = dict()
+    values = dict()
 
-    with open(yaml_file, 'r') as hfile:
-        data = dict(yaml.safe_load(hfile))
+    with open(yaml_file, 'r') as opened_file:
+        data = dict(yaml.safe_load(opened_file))
 
     all_fields_names = tuple(field_name for field_name in data['fields'])
     optional_fields_names = tuple(field_name for field_name, value in data['fields'].items() if 'optional' in value)
-    field_types_as_strings = {field_name: data['definition'][field_name]['type'] for field_name in all_fields_names if data['definition'][field_name]['type'] is not None}
-    field_types_as_strings.update({field_name: 'null' for field_name in all_fields_names if data['definition'][field_name]['type'] is None})
+    field_types_as_strings = {field_name: data['definition'][field_name]['type'] for field_name in all_fields_names if
+                              data['definition'][field_name]['type'] is not None}
+    field_types_as_strings.update(
+        {field_name: 'null' for field_name in all_fields_names if data['definition'][field_name]['type'] is None})
     field_types = dict()
 
     # load defined classes, getting default values and import serializers
@@ -35,15 +36,15 @@ def load_model(yaml_file):
             module = importlib.import_module(data['types_definitions'][type_name])
             TYPES[type_name] = getattr(module, type_name)
 
-    if 'serialisers_definitions' in data:
-        for serializer_name in data['serialisers_definitions']:
-            module = importlib.import_module(data['serialisers_definitions'][serializer_name])
-            SERIALIZERS[serializer_name] = getattr(module, serializer_name)
+    if 'serializers_definitions' in data:
+        for serializer_name in data['serializers_definitions']:
+            module = importlib.import_module(data['serializers_definitions'][serializer_name])
+            serializers[serializer_name] = getattr(module, serializer_name)
 
     if 'values_definitions' in data:
         for value_name in data['values_definitions']:
             module = importlib.import_module(data['values_definitions'][value_name])
-            VALUES[value_name] = getattr(module, value_name)
+            values[value_name] = getattr(module, value_name)
 
     default_values = dict()
     hidden_fields = dict()
@@ -53,13 +54,13 @@ def load_model(yaml_file):
         hidden_fields[field_name] = data['definition'][field_name].get('hidden', False)
         default_value = data['definition'][field_name].get('default_value', Undefined())
 
-        if default_value in VALUES:
-            default_values[field_name] = VALUES[default_value]
+        if default_value in values:
+            default_values[field_name] = values[default_value]
         else:
             default_values[field_name] = default_value
 
         serializer_name = data['definition'][field_name].get('serializer', None)
-        serializers[field_name] = SERIALIZERS.get(serializer_name, Undefined)
+        serializers[field_name] = serializers.get(serializer_name, Undefined)
 
         if isinstance(field_types_as_strings[field_name], list):
             types = tuple([TYPES[typename] for typename in field_types_as_strings[field_name]])
