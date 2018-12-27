@@ -438,6 +438,29 @@ def with_metaclass(meta, *bases):
     return type.__new__(Metaclass, 'temporary_class', (), {})
 
 
+def get_data_from_dict(source_dict, keys):
+    """ Get dict with keys witch specify and with values from specified dict by that keys from source_dict
+
+    :param source_dict: dictionary
+    :param keys: keys for creation new dict, that keys should be exists in a source_dict
+    :return: dict with keys witch specify and with values from specified dict by that keys from source_dict
+    """
+    return {key: source_dict[key] for key in keys}
+
+
+def get_public_fields_as_dict(cls_dict, hidden_fields, excluded_fields):
+    """ Get dict with only public fields
+
+    :param cls_dict: __dict__ of object
+    :param hidden_fields: list of fields witch need to hide
+    :param excluded_fields: list of fields witch need to exclude
+    :return: dict with only public fields
+    """
+    excluded_names = set(hidden_fields).union(excluded_fields)
+    public_names = set(cls_dict.keys()) - excluded_names
+    return get_data_from_dict(cls_dict, keys=public_names)
+
+
 if PY3:
     is_empty_string = _is_empty_string_py3
 else:

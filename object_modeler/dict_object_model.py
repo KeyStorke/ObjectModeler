@@ -1,5 +1,5 @@
 from object_modeler.common import ObjectModelDictMetaclass, PrettyObjectModelDictMetaclass, BaseObjectModel, \
-    with_metaclass
+    with_metaclass, get_public_fields_as_dict
 
 
 class _PrototypeDictObjectModel(BaseObjectModel):
@@ -14,16 +14,16 @@ class _PrototypeDictObjectModel(BaseObjectModel):
     def to_dict(self, excluded_fields=None):
 
         if excluded_fields is None:
-            result = {k: self.__dict__[k] for k in self.__dict__ if k not in self._hidden_fields}
-        else:
-            result = {k: self.__dict__[k] for k in self.__dict__ if k not in excluded_fields and k not in self._hidden_fields}
+            excluded_fields = set()
 
-        must_be_serialized = ((key, self._serializers[key]) for key in result if key in self._serializers)
+        as_dict = get_public_fields_as_dict(self.__dict__, self._hidden_fields, excluded_fields)
+
+        must_be_serialized = ((key, self._serializers[key]) for key in as_dict if key in self._serializers)
 
         for key, serializer in must_be_serialized:
-            result[key] = serializer(result[key])
+            as_dict[key] = serializer(as_dict[key])
 
-        return result
+        return as_dict
 
 
 class GenericDictObjectModel(with_metaclass(ObjectModelDictMetaclass, _PrototypeDictObjectModel)):
