@@ -65,7 +65,9 @@ class C(ObjectModel):
     e = Field(optional=True).types(int)
     x = Field(default_value=True, hidden=True).types(str)
 
+
 Y = load_model('test_model.yml')
+
 
 class SomeClass:
     @staticmethod
@@ -77,7 +79,8 @@ class C2(ObjectModel):
     X = "all correct"
 
 
-class D(C, C2, SomeClass): pass
+class D(C, C2, SomeClass):
+    pass
 
 
 class E(SlotsObjectModel):
@@ -91,7 +94,8 @@ class E(SlotsObjectModel):
 class E2(E):
     e = Field(types=(int,), default_value=10)
 
-    def test(self):
+    @staticmethod
+    def test():
         return 21
 
     @staticmethod
@@ -195,6 +199,7 @@ class TestPrettyDictObjectModel(unittest.TestCase):
     def test_name(self):
         self.assertEqual(self.a.__name__(), 'C')
 
+
 class TestYAMLObjectModel(unittest.TestCase):
     def setUp(self):
         self.a = Y(test_dict)
@@ -211,7 +216,7 @@ class TestYAMLObjectModel(unittest.TestCase):
 
     def test_overhead_data_in_constructor(self):
         with self.assertRaises(AttributeError):
-            return self.a.O
+            _ = self.a.O
 
     def test_to_dict(self):
         self.assertDictEqual(correct_dict, self.a.to_dict())
