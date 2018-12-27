@@ -126,11 +126,10 @@ def check_cls_dictionary(cls_dict):
                                 cls_dict.get('default_values', dict()).keys())
 
 
-def prepare_new_class(cls_dict, name):
-    """ preparing a new class
+def prepare_dict_of_new_class(cls_dict):
+    """ preparing a dictionary of the new class
 
     :param cls_dict: class for preparing
-    :param name: class name
     """
     check_cls_dictionary(cls_dict)
 
@@ -157,7 +156,7 @@ def new_slots_class(mcs, name, bases, cls_dict):
     :param cls_dict: __dict__ of new class
     :return: new object
     """
-    prepare_new_class(cls_dict, name)
+    prepare_dict_of_new_class(cls_dict)
 
     cls_dict['__slots__'] = cls_dict.get('_all_fields', tuple())
 
@@ -177,7 +176,7 @@ def new_dict_class(mcs, name, bases, cls_dict):
     :param cls_dict: __dict__ of new class
     :return: new object
     """
-    prepare_new_class(cls_dict, name)
+    prepare_dict_of_new_class(cls_dict)
 
     return type.__new__(mcs, name, bases, cls_dict)
 
