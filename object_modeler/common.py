@@ -290,11 +290,24 @@ class Field(object):
         self.optional = optional
         self.default_value = default_value
         self.hidden = hidden
+
+        self._serializer = None
+
         self.serializer = serializer
 
     def types(self, *args):
         self.type_list += args
         return self
+
+    @property
+    def serializer(self):
+        return self._serializer
+
+    @serializer.setter
+    def serializer(self, serializer):
+        if not callable(serializer) and not isinstance(serializer, Undefined):
+            raise ValueError('Serializer is not callable type')
+        self._serializer = serializer
 
 
 class PrettyObjectModelDictMetaclass(type):
@@ -333,8 +346,8 @@ class PrettyObjectModelDictMetaclass(type):
             if field.hidden:
                 hidden_fields.append(field_name)
 
-            if not isinstance(field.serializer, Undefined):
-                serializers[field_name] = field.serializer
+            if not isinstance(field._serializer, Undefined):
+                serializers[field_name] = field._serializer
 
             if not isinstance(field.default_value, Undefined):
                 default_values[field_name] = field.default_value
