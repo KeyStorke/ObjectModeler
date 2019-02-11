@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     test_suite='test',
     name='object_modeler',
-    version='1.0.2',
+    version='1.0.3',
     packages=['object_modeler'],
     install_requires=[
         'pyyaml'
