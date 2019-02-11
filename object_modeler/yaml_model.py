@@ -1,16 +1,24 @@
 import yaml
-from object_modeler import SlotsObjectModel
-from object_modeler.common import Undefined, Field
+from .slots_object_model import SlotsObjectModel
+from .common import Undefined, Field
 import importlib
+import sys
+
+PY3 = sys.version_info >= (3, 0)
+
+if PY3:
+    unicode = str
+
+# types from the open api specification (see details: https://swagger.io/docs/specification/data-models/data-types/)
 
 TYPES = {
-    'dictionary': dict,
-    'string': str,
+    'string': unicode,
+    'number': float,
     'integer': int,
     'boolean': bool,
+    'array': list,
+    'object': dict,
     'null': None,
-    'list': list,
-    'unicode': str
 }
 
 
